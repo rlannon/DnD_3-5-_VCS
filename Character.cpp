@@ -38,7 +38,10 @@ int Character::getAbilityScore(std::string ability) {
 	else if (ability == "wis") {
 		return Character::wisdom;
 	}
-	else {
+	else if (ability == "cha") {
+		return Character::charisma;
+	}
+ 	else {
 		return 119;
 	}
 }
@@ -91,7 +94,7 @@ void Character::modXP(std::string op, int val) {
 }
 
 int Character::getSkillModifier(Skill skill) {
-	return (skill.ranks + Character::getModifier(Character::getAbilityScore(skill.ability)));
+	return (skill.ranks + (Character::getModifier(Character::getAbilityScore(skill.ability))));
 }
 
 std::string Character::getSkillName(Skill skill) {

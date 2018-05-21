@@ -28,21 +28,7 @@ This library establishes RVC file format, which is to be used for storing all th
 
 */
 
-const uint16_t version = 1;
-
-// Our read/write functions
-// Note uint8_t can be stored "as is", but we must break down 16 into 2 chunks
-
-uint8_t readU8(std::istream& file);
-void writeU8(std::ostream& file, uint8_t val);
-
-uint16_t readU16(std::istream& file);
-void writeU16(std::ostream& file, uint16_t val);
-
-// Must write the length of the string to the file, then the string data so we know how long our string actually is
-
-std::string readString(std::istream& file);
-void writeString(std::ostream& file, std::string str);
+const uint8_t rvc_version = 1;
 
 void saveClassStructure(std::ostream& file, ClassData class_obj);
 void loadClassData(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);

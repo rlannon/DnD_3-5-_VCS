@@ -14,8 +14,9 @@ class Character
 protected:
 	std::string name;
 	std::string race;
-	int xp; // initialized to 0
 	std::string character_class;
+
+	int xp; // initialized to 0
 
 	uint8_t level; // type uint8_t for the RVC:loadClassData() function
 

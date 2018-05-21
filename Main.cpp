@@ -1,11 +1,17 @@
 #include "stdafx.h"
+
+// Classes
 #include "Character.h"
 #include "CharacterClass.h"
 #include "ClassData.h"
 #include "Skill.h"
-#include "RVC.h"
 
-void printCharSheet(Character character, CharacterClass char_class, Skill skill); // for debug only
+// File Formats
+#include "FundamentalDataTypes.h"
+#include "RVC.h"
+#include "SkillsFormat.h"
+
+void printCharSheet(Character character, CharacterClass char_class, Skill skill[35]); // for debug only
 
 int main() {
 
@@ -39,62 +45,19 @@ int main() {
 	Character new_char("Aleksei", "Taer", "Rogue", 10, 11, 12, 13, 14, 15);
 	CharacterClass new_class("", 0, 0, 0, 0, 0, 0);
 
-	Skill skills[35]{
-		Skill("Appraise", "int", 1),
-		Skill("Balance", "dex", 1),
-		Skill("Bluff", "cha", 1),
-		Skill("Climb", "str", 1),
-		Skill("Concentration", "con", 1),
-		Skill("Craft", "int", 1),
-		Skill("Decipher Script", "int", 1),
-		Skill("Diplomacy", "cha", 1),
-		Skill("Disable Device", "int", 1),
-		Skill("Disguise", "cha", 1),
-		Skill("Escape Artist", "dex", 1),
-		Skill("Forgery", "int", 1),
-		Skill("Gather Information", "int", 1),
-		Skill("Handle Animal", "cha", 1),
-		Skill("Heal", "wis", 1),
-		Skill("Hide", "dex", 1),
-		Skill("Intimidate", "cha", 1),
-		Skill("Jump", "str", 1),
-		Skill("Knowledge", "int", 1),
-		Skill("Listen", "wis", 1),
-		Skill("Move Silently", "dex", 1),
-		Skill("Open Lock", "dex", 0),
-		Skill("Perform", "cha", 0),
-		Skill("Profession", "wis", 1),
-		Skill("Ride", "dex", 1),
-		Skill("Search", "int", 1),
-		Skill("Sense Motive", "wis", 1),
-		Skill("Sleight of Hand", "dex", 1),
-		Skill("Spellcraft", "int", 0),
-		Skill("Spot", "wis", 1),
-		Skill("Survival", "wis", 1),
-		Skill("Swim", "str", 1),
-		Skill("Tumble", "dex", 1),
-		Skill("Use Magic Device", "int", 0),
-		Skill("Use Rope", "dex", 1)
-	};
+	Skill test_skill[35];
+	Skill* skill_ptr = test_skill;
 
 	std::string err = "";
 
-	// this is mostly for dummy stuff
-	bool flags[35] = { 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1 };
-	unsigned short bab_mid[20] = { 0,1,2,3,3,4,5,6,6,7,8,9,9,10,11,12,12,13,14,15 };
-	unsigned short save_low[20] = { 0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6, };
-	unsigned short save_high[20] = { 2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12 };
-
-	ClassData rogue8("Rogue", bab_mid, save_low, save_high, save_low, 6, 8, flags);
-
-	std::ofstream outfile;
-	outfile.open("rogue8.rvc", std::ios::out | std::ios::binary);
-	if (outfile.is_open()) {
-		saveClassStructure(outfile, rogue8);
-		outfile.close();
+	std::ifstream loadFile;
+	loadFile.open("skilltest.skills", std::ios::in | std::ios::binary);
+	if (loadFile.is_open()) {
+		loadSkillStructure(loadFile, skill_ptr, &err);
+		loadFile.close();
 	}
 	else {
-		std::cout << "error opening file!" << std::endl;
+		err = "could not open file";
 	}
 
 	std::ifstream infile;
@@ -106,11 +69,12 @@ int main() {
 	else {
 		std::cout << "error opening file!" << std::endl;
 	}
+	printCharSheet(new_char, new_class, test_skill);
 
 	return 0;
 }
 
-void printCharSheet(Character character, CharacterClass char_class, Skill skill) {
+void printCharSheet(Character character, CharacterClass char_class, Skill skill[35]) {
 	std::cout << "character sheet: " << std::endl << std::endl
 		<< "Name: \t" << character.getName() << std::endl
 		<< "Race: \t" << character.getRace() << std::endl
@@ -122,7 +86,8 @@ void printCharSheet(Character character, CharacterClass char_class, Skill skill)
 		<< "Fortitude: \t" << character.getSavingThrow("for", char_class) << std::endl
 		<< "Reflex: \t" << character.getSavingThrow("ref", char_class) << std::endl
 		<< "Will: \t" << character.getSavingThrow("wil", char_class) << std::endl;
-
-	std::cout << character.getSkillName(skill) << " skill: \t" << character.getSkillModifier(skill);
+	for (int i = 0; i < 35; i++) {
+		std::cout << character.getSkillName(skill[i]) << " skill: \t" << character.getSkillModifier(skill[i]) << std::endl;
+	}
 	return;
 }
