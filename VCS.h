@@ -25,8 +25,7 @@ The VCS format is at the center of this program; it is what we use to save insta
 	uint8_t wisdom
 	uint8_t charisma
 
-	uint8_t flat_footed
-	uint8_t initiative
+	uint8_t initiative_mod
 
 	uint16_t cp	-> these get saved to "int money[4]"
 	uint16_t sp
@@ -37,4 +36,4 @@ The VCS format is at the center of this program; it is what we use to save insta
 const uint8_t vcs_version = 1;
 
 void saveToVCS(std::ostream& file, Character character);
-void loadVCS(std::ostream& file, Character* character);
+void loadVCS(std::istream& file, Character* character, std::string* err);

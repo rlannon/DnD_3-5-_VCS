@@ -1,40 +1,9 @@
 #include "CharacterClass.h"
 
-// The following functions are used to retrieve data
-/*
-uint16_t CharacterClass::getBaseAttackBonus() {
-	return base_attack_bonus;
-}
-
-uint8_t CharacterClass::getSavingThrow(std::string s_throw) {
-	if (s_throw == "for") {
-		return CharacterClass::fortitude;
-	}
-	else if (s_throw == "ref") {
-		return CharacterClass::reflex;
-	}
-	else if (s_throw == "wil") {
-		return CharacterClass::will;
-	}
-	else {
-		return 49;
-	}
-}
-
-uint8_t CharacterClass::getHitDie() {
-	return CharacterClass::hit_die;
-}
-
-std::string CharacterClass::getName() {
-	return CharacterClass::name;
-}
-
-*/
-
 /****************************************************************************************************************************
 *****************************************************************************************************************************
 
-						****************	LOAD FROM FILE TO CHARACTER CLASS	****************
+					  ****************	  FUNCTIONS TO LOAD FROM FILE TO CHARACTER CLASS	****************
 
 *****************************************************************************************************************************
 ****************************************************************************************************************************/

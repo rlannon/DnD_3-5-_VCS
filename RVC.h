@@ -30,5 +30,5 @@ This library establishes RVC file format, which is to be used for storing all th
 
 const uint8_t rvc_version = 1;
 
-void saveClassStructure(std::ostream& file, ClassData class_obj);
-void loadClassData(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);
+void saveToRVC(std::ostream& file, ClassData class_obj);
+void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);

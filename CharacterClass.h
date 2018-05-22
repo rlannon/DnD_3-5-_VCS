@@ -37,21 +37,8 @@ class CharacterClass
 
 	friend class Character; // allow class "Character" to access these private members
 	friend class Skill; // allow class 'Skill' to access these private members
-	friend void loadClassData(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);
+	friend void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);
 public:
-	
-	/*
-
-	// These are in ClassData because they are used in the save function
-	// So we probably..don't need them...I don't think they're used anywhere else
-
-	uint16_t getBaseAttackBonus();
-	uint8_t getSavingThrow(std::string s_throw);
-	uint8_t getHitDie();
-	std::string getName();
-
-	*/
-
 	CharacterClass(std::string name,  short base_attack_bonus, unsigned short fortitude, unsigned short reflex, unsigned short will, unsigned short hit_die, unsigned short skill_coefficient);
 	~CharacterClass();
 };

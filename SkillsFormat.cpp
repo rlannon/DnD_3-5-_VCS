@@ -39,6 +39,8 @@ void loadSkillStructure(std::istream& file, Skill * skill_structure, std::string
 
 			(skill_structure+i)->is_general = readU8(file);
 		}
+
+		*err = "no errors!";
 	}
 	else {
 		*err = "error: incorrect file format";

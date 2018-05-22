@@ -15,3 +15,7 @@ The Virtual Character Sheet format (.vcs) is used for storing all data about the
 ### SKILLS
 
 The Skills format (.skills) is simply used to store our array of Skills objects so it isn't hard-coded into the program.
+
+## Note for future
+
+Replace all instances of `readU8()` with `file.read()` and all instances of `writeU8` with `file.write()`, because we don't really need a function to do this for us.

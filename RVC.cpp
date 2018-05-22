@@ -6,7 +6,7 @@
 
 // Construct a file with the FundamentalDataTypes functions given a CharacterClass object
 
-void saveClassStructure(std::ostream& file, ClassData class_obj) {
+void saveToRVC(std::ostream& file, ClassData class_obj) {
 	// write our header data
 	char * header = "RVCf";
 	file.write(header, 4);
@@ -40,7 +40,7 @@ void saveClassStructure(std::ostream& file, ClassData class_obj) {
 	writeString(file, class_obj.getName());
 }
 
-void loadClassData(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err) {
+void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err) {
 	char header[4];
 	char * buffer = &header[0];
 	uint8_t vers;
@@ -100,6 +100,8 @@ void loadClassData(std::istream& file, CharacterClass* class_obj, uint8_t level,
 
 		// read name
 		class_obj->setName(readString(file));
+
+		*err = "no errors in RVC file!";
 	}
 	else {
 		*err = "error: incorrect file type!";

@@ -9,7 +9,9 @@ This header only needs to be included in the .cpp files for a file format specif
 */
 
 uint8_t readU8(std::istream& file);
-void writeU8(std::ostream& file, uint8_t val);
+void writeU8(std::ostream& file, uint8_t val); // eliminate these and replace with file.read() and file.write()
+
+// NOTE: For signed values, simply cast to uint8_t before writing and cast back to int8_t after reading
 
 uint16_t readU16(std::istream& file);
 void writeU16(std::ostream& file, uint16_t val);
