@@ -13,8 +13,8 @@ The VCS format is at the center of this program; it is what we use to save insta
 	const uint8_t vcs_version = 1
 
 	string name
-	string race
-	string class
+	string char_race_name  -> these will both be used to load the correct file for Race and CharacterClass
+	string char_class_name -> 
 
 	uint16_t xp
 	

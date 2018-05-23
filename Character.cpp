@@ -5,12 +5,23 @@ std::string Character::getName() {
 }
 
 std::string Character::getRace() {
-	return Character::race;
+	return Character::race_name;
 }
 
 std::string Character::getClass() {
-	return Character::char_class;
+	return Character::char_class_name;
 }
+
+// SET CLASS AND RACE
+
+void Character::setCharacterRace(Race* char_race) {
+	Character::char_race = char_race;
+}
+void Character::setCharacterClass(CharacterClass* char_class) {
+	Character::char_class = char_class;
+}
+
+// GET VALUES
 
 int Character::getMaxHitPoints(CharacterClass char_class) {
 	return ((int)Character::getLevel() * (Character::getModifier(Character::getAbilityScore("con")) + char_class.hit_die));
@@ -130,11 +141,14 @@ std::string Character::getSkillName(Skill skill) {
 }
 
 // This initializer would be best for starting a new character, or creating a test character
-Character::Character(std::string name, std::string race, std::string char_class, int str, int dex, int con, int intel, int wis, int cha) // strength, dex, con, int, wis, cha
+Character::Character(CharacterClass* char_class, Race* char_race, std::string name, int str, int dex, int con, int intel, int wis, int cha) // strength, dex, con, int, wis, cha
 {
-	Character::name = name;
 	Character::char_class = char_class;
-	Character::race = race;
+	Character::char_race = char_race;
+
+	Character::name = name;
+	Character::char_class_name = char_class->name;
+	Character::race_name = char_race->name;
 
 	Character::strength = str;
 	Character::dexterity = dex;
@@ -153,7 +167,7 @@ Character::Character(std::string name, std::string race, std::string char_class,
 
 // This initializer should be used when loading character data from a file
 Character::Character() {
-	Character::name, Character::char_class, Character::race = "";
+	Character::name, Character::char_class_name, Character::race_name = "";
 	Character::strength, Character::dexterity, Character::constitution, Character::intelligence, Character::wisdom, Character::charisma = 0;
 	Character::money[0], Character::money[1], Character::money[2], Character::money[3] = 0;
 	Character::xp = 0;

@@ -44,8 +44,8 @@ void loadVCS(std::istream& file, Character* character, std::string* err) {
 
 		// read strings
 		character->name = readString(file);
-		character->race = readString(file);
-		character->char_class = readString(file);
+		character->race_name = readString(file);
+		character->char_class_name = readString(file);
 
 		// read xp
 		character->xp = readU16(file);

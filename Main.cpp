@@ -55,16 +55,28 @@ int main() {
 	*/
 
 	Character character;
+	Race char_race;
 	CharacterClass char_class;
 	Skill skill_structure[35];
 	Skill* skill_ptr = &skill_structure[0];
 
 	std::string err;
 
+	createRace();
+
 	std::ifstream charfile;
 	charfile.open("Aleksei.vcs", std::ios::in | std::ios::binary);
 	if (charfile.is_open()) {
 		loadVCS(charfile, &character, &err);
+	}
+	else {
+		std::cerr << "error opening file" << std::endl;
+	}
+
+	std::ifstream racefile;
+	racefile.open(character.getRace() + ".rvr", std::ios::in | std::ios::binary);
+	if (racefile.is_open()) {
+		loadRVR(racefile, &char_race, &err);
 	}
 	else {
 		std::cerr << "error opening file" << std::endl;
@@ -88,7 +100,11 @@ int main() {
 		std::cerr << "error opening file" << std::endl;
 	}
 
+	character.setCharacterClass(&char_class);
+	character.setCharacterRace(&char_race);
+
 	charfile.close();
+	racefile.close();
 	classfile.close();
 	skillfile.close();
 

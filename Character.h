@@ -17,9 +17,12 @@ class Character
 	friend void saveToVCS(std::ostream& file, Character character);
 	friend void loadVCS(std::istream& file, Character* character, std::string* err);
 protected:
+	CharacterClass* char_class;
+	Race* char_race;
+
 	std::string name;
-	std::string race;
-	std::string char_class;
+	std::string race_name;
+	std::string char_class_name;
 
 	int xp; // initialized to 0
 
@@ -41,6 +44,9 @@ public:
 	std::string getRace();
 	std::string getClass();
 
+	void setCharacterRace(Race* char_race);
+	void setCharacterClass(CharacterClass* char_class);
+
 	int getMaxHitPoints(CharacterClass char_class);
 	
 	int getAbilityScore(std::string ability);
@@ -59,7 +65,7 @@ public:
 	int getSkillModifier(Skill skill);
 	std::string getSkillName(Skill skill);
 
-	Character(std::string name, std::string race, std::string char_class, int str, int dex, int con, int intel, int wis, int cha);
+	Character(CharacterClass* char_class, Race* char_race, std::string name, int str, int dex, int con, int intel, int wis, int cha);
 	Character();
 	~Character();
 };
