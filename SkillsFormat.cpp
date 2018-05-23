@@ -18,7 +18,7 @@ void saveSkillStructure(std::ostream& file, Skill skill_structure[35]) {
 	}
 }
 
-void loadSkillStructure(std::istream& file, Skill * skill_structure, std::string* err) {
+void loadSkillStructure(std::istream& file, Skill * skill_ptr, std::string* err) {
 	// load header and version
 	char header[7];
 	char * buffer = header;
@@ -34,10 +34,10 @@ void loadSkillStructure(std::istream& file, Skill * skill_structure, std::string
 		// potential version control code here
 
 		for (int i = 0; i < 35; i++) {
-			(skill_structure+i)->name = readString(file);
-			(skill_structure+i)->ability = readString(file);
+			(skill_ptr+i)->name = readString(file);
+			(skill_ptr+i)->ability = readString(file);
 
-			(skill_structure+i)->is_general = readU8(file);
+			(skill_ptr+i)->is_general = readU8(file);
 		}
 
 		*err = "no errors!";

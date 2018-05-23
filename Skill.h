@@ -18,6 +18,9 @@ class Skill
 public:
 	void setClassSkill(bool is_class_skill);
 
+	Skill getSkill(std::string name);
+	// note: usage would be, for example, `character.getSkillName(skill_structure->getSkill(__name__))` instead of `character.getSkillName(i)`
+
 	Skill(std::string name, std::string ability, bool is_general);
 	Skill();
 	~Skill();

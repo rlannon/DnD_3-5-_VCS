@@ -153,7 +153,7 @@ Character::Character(std::string name, std::string race, std::string char_class,
 
 // This initializer should be used when loading character data from a file
 Character::Character() {
-	Character::name, Character::character_class, Character::race = "";
+	Character::name, Character::char_class, Character::race = "";
 	Character::strength, Character::dexterity, Character::constitution, Character::intelligence, Character::wisdom, Character::charisma = 0;
 	Character::money[0], Character::money[1], Character::money[2], Character::money[3] = 0;
 	Character::xp = 0;

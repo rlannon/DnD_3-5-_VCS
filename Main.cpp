@@ -54,6 +54,44 @@ int main() {
 
 	*/
 
+	Character character;
+	CharacterClass char_class;
+	Skill skill_structure[35];
+	Skill* skill_ptr = &skill_structure[0];
+
+	std::string err;
+
+	std::ifstream charfile;
+	charfile.open("Aleksei.vcs", std::ios::in | std::ios::binary);
+	if (charfile.is_open()) {
+		loadVCS(charfile, &character, &err);
+	}
+	else {
+		std::cerr << "error opening file" << std::endl;
+	}
+
+	std::ifstream classfile;
+	classfile.open("rogue8.rvc", std::ios::in | std::ios::binary);
+	if (classfile.is_open()) {
+		loadRVC(classfile, &char_class, character.getLevel(), &err);
+	}
+	else {
+		std::cerr << "error opening file" << std::endl;
+	}
+
+	std::ifstream skillfile;
+	skillfile.open("skilltest.skills", std::ios::in | std::ios::binary);
+	if (skillfile.is_open()) {
+		loadSkillStructure(skillfile, skill_ptr, &err);
+	}
+	else {
+		std::cerr << "error opening file" << std::endl;
+	}
+
+	charfile.close();
+	classfile.close();
+	skillfile.close();
+
 	return 0;
 }
 

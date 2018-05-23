@@ -40,5 +40,6 @@ class CharacterClass
 	friend void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);
 public:
 	CharacterClass(std::string name,  short base_attack_bonus, unsigned short fortitude, unsigned short reflex, unsigned short will, unsigned short hit_die, unsigned short skill_coefficient);
+	CharacterClass();
 	~CharacterClass();
 };

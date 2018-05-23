@@ -73,6 +73,13 @@ CharacterClass::CharacterClass(std::string name, short base_attack_bonus, unsign
 	}
 }
 
+CharacterClass::CharacterClass() {
+	CharacterClass::name = "0";
+	CharacterClass::base_attack_bonus, CharacterClass::fortitude, CharacterClass::reflex, CharacterClass::will, CharacterClass::hit_die, CharacterClass::skill_coefficient = 0;
+	for (int i = 0; i < 35; i++) {
+		CharacterClass::classSkillFlag[i] = 0;
+	}
+}
 
 CharacterClass::~CharacterClass()
 {
