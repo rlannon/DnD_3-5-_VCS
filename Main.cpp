@@ -15,15 +15,9 @@
 #include "SkillsFormat.h"
 
 // Other
-#include "RaceCreationUtility.h"
+#include "Utility.h"
 
-void printCharSheet(Character character, CharacterClass char_class, Skill skill[35]); // for debug only
-
-void saveChar(Character character, std::string* err);
-void loadChar(Character* character, std::string* err);
-
-void loadClass(CharacterClass* char_class, Character character, std::string* err);
-void loadSkill(Skill* skill_ptr, std::string* err);
+void printCharSheet(Character character, CharacterClass char_class, Skill skill[num_skills]); // for debug only
 
 int main() {
 
@@ -52,131 +46,99 @@ int main() {
 	Additionally, some functions require a 3-character code for execution. This will either be the first three letters of the ability name or the saving throw name. This makes it easier for you when you want to select an attribute rather than trying to remember/find the correct number.
 	For example, character.getAbilityScore("str") returns character.strength.
 
+	The functions now use strings, so you can use the 3-character code OR the full name -- for example,
+			character.getAbilityScore("str")
+		and
+			character.getAbilityScore("strength")
+		are both acceptable
+
 	*/
 
 	Character character;
 	Race char_race;
 	CharacterClass char_class;
-	Skill skill_structure[35];
+	Skill skill_structure[num_skills];
 	Skill* skill_ptr = &skill_structure[0];
 
-	std::string err;
+	std::string err = "";
 
-	createRace();
-
-	std::ifstream charfile;
-	charfile.open("Aleksei.vcs", std::ios::in | std::ios::binary);
-	if (charfile.is_open()) {
-		loadVCS(charfile, &character, &err);
-	}
-	else {
-		std::cerr << "error opening file" << std::endl;
-	}
+	int c;
+	uint8_t n = 1;
 
 	std::ifstream racefile;
-	racefile.open(character.getRace() + ".rvr", std::ios::in | std::ios::binary);
+	racefile.open("data/Dwarf.rvr", std::ios::in | std::ios::binary);
 	if (racefile.is_open()) {
 		loadRVR(racefile, &char_race, &err);
+		racefile.close();
 	}
 	else {
-		std::cerr << "error opening file" << std::endl;
+		err += "error reading file \"data/human.rvr\"!\n";
 	}
 
 	std::ifstream classfile;
-	classfile.open("rogue8.rvc", std::ios::in | std::ios::binary);
+	classfile.open("data/Barbarian.rvc", std::ios::in | std::ios::binary);
 	if (classfile.is_open()) {
-		loadRVC(classfile, &char_class, character.getLevel(), &err);
+		loadRVC(classfile, &char_class, 0, &err);
+		classfile.close();
 	}
 	else {
-		std::cerr << "error opening file" << std::endl;
+		err += "error reading file \"data/rogue.rvc\"!\n";
 	}
 
 	std::ifstream skillfile;
-	skillfile.open("skilltest.skills", std::ios::in | std::ios::binary);
+	skillfile.open("data/skills.skills", std::ios::in | std::ios::binary);
 	if (skillfile.is_open()) {
 		loadSkillStructure(skillfile, skill_ptr, &err);
+		skillfile.close();
 	}
 	else {
-		std::cerr << "error opening file" << std::endl;
+		err += "error reading file \"data/skills.skills\"!\n";
 	}
 
-	character.setCharacterClass(&char_class);
-	character.setCharacterRace(&char_race);
-
-	charfile.close();
-	racefile.close();
-	classfile.close();
-	skillfile.close();
-
+	while (n > 0) {
+		std::cout << "Select an option:\n" << std::endl
+			<< "[1] Use Utility" << std::endl
+			<< "[2] Print CharSheet" << std::endl
+			<< "\n[3] Quit" << std::endl;
+		std::cin >> c;
+		switch (c) {
+		case 1:
+			utility();
+			break;
+		case 2:
+			character.createNewCharacter(&char_class, &char_race, skill_ptr, "Stout", 10, 11, 12, 13, 14, 15);
+			printCharSheet(character, char_class, skill_structure);
+			break;
+		case 3:
+			n--;
+			break;
+		default:
+			std::cout << "invalid selection!" << std::endl;
+			break;
+		}
+		std::cout << std::endl;
+	}
 	return 0;
 }
 
-void printCharSheet(Character character, CharacterClass char_class, Skill skill[35]) {
+void printCharSheet(Character character, CharacterClass char_class, Skill skill[num_skills]) {
 	std::cout << "character sheet: " << std::endl << std::endl
 		<< "Name: \t" << character.getName() << std::endl
 		<< "Race: \t" << character.getRace() << std::endl
 		<< "Class: \t" << character.getClass() << std::endl
 		<< "Level: \t" << (int)character.getLevel() << std::endl
-		<< "Max Hit Points: \t" << character.getMaxHitPoints(char_class) << std::endl
+		<< "Strength: \t" << character.getAbilityScore("str") << std::endl
+		<< "Max Hit Points: \t" << character.getMaxHitPoints() << std::endl
 		<< "Armor Class: \t" << std::endl
-		<< "Base Attack Bonus (M/R): \t" << character.getAttackBonus("mel", char_class) << "/" << character.getAttackBonus("ran", char_class) << std::endl
-		<< "Fortitude: \t" << character.getSavingThrow("for", char_class) << std::endl
-		<< "Reflex: \t" << character.getSavingThrow("ref", char_class) << std::endl
-		<< "Will: \t" << character.getSavingThrow("wil", char_class) << std::endl;
-	for (int i = 0; i < 35; i++) {
-		std::cout << character.getSkillName(skill[i]) << " skill: \t" << character.getSkillModifier(skill[i]) << std::endl;
+		<< "Base Attack Bonus (M/R): \t" << character.getAttackBonus("mel") << "/" << character.getAttackBonus("ran") << std::endl
+		<< "Fortitude: \t" << character.getSavingThrow("for") << std::endl
+		<< "Reflex: \t" << character.getSavingThrow("ref") << std::endl
+		<< "Will: \t" << character.getSavingThrow("wil") << std::endl << std::endl;
+	// this for loop will only list skills the player can use
+	for (int i = 0; i < num_skills; i++) {
+		if (character.getSkillFlagStatus(i) || skill[i].isUntrained()) {
+			std::cout << character.getSkillName(skill[i]) << ": " << character.getSkillModifier(skill[i]) << std::endl;
+		}
 	}
 	return;
-}
-
-void saveChar(Character character, std::string* err) {
-	std::ofstream vcs;
-	vcs.open(character.getName() + ".vcs", std::ios::out | std::ios::binary);
-	if (vcs.is_open()) {
-		saveToVCS(vcs, character);
-		*err = "file saved successfully as " + character.getName() + ".vcs";
-	}
-	else {
-		*err = "error: could not open file: " + character.getName() + ".vcs";
-	}
-	return;
-}
-
-void loadChar(Character* character, std::string* err) {
-	std::string name;
-	std::cout << "Character Name? ";
-	std::getline(std::cin, name);
-	
-	std::ifstream vcs;
-	vcs.open(name + ".vcs", std::ios::in | std::ios::binary);
-	if (vcs.is_open()) {
-		loadVCS(vcs, character, err);
-	}
-	else {
-		*err = "error: could not open file: " + name + ".vcs";
-	}
-}
-
-void loadClass(CharacterClass* char_class, Character character, std::string* err) {
-	std::ifstream classfile;
-	classfile.open("rogue8.rvc", std::ios::in | std::ios::binary);
-	if (classfile.is_open()) {
-		loadRVC(classfile, char_class, character.getLevel(), err);
-		classfile.close();
-	}
-	else {
-		*err = "error opening file!";
-	}
-}
-
-void loadSkill(Skill* skill_ptr, std::string* err) {
-	std::ifstream loadFile;
-	loadFile.open("skilltest.skills", std::ios::in | std::ios::binary);
-	if (loadFile.is_open()) {
-		loadSkillStructure(loadFile, skill_ptr, err);
-		loadFile.close();
-	}
-	else {
-		*err = "could not open file";
-	}
 }

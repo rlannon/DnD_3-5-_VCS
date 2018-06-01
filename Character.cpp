@@ -23,8 +23,8 @@ void Character::setCharacterClass(CharacterClass* char_class) {
 
 // GET VALUES
 
-int Character::getMaxHitPoints(CharacterClass char_class) {
-	return ((int)Character::getLevel() * (Character::getModifier(Character::getAbilityScore("con")) + char_class.hit_die));
+int Character::getMaxHitPoints() {
+	return (((int)Character::getLevel()+1) * (Character::getModifier(Character::getAbilityScore("con")) + Character::char_class->hit_die));
 }
 
 int Character::getModifier(int ability_score) {
@@ -32,23 +32,23 @@ int Character::getModifier(int ability_score) {
 }
 
 int Character::getAbilityScore(std::string ability) {
-	if (ability == "str") {
-		return Character::strength;
+	if (ability == "strength" | ability == "str") {
+		return (Character::strength + Character::char_race->str_bonus);
 	}
-	else if (ability == "con") {
-		return Character::constitution;
+	else if (ability == "constitution" | ability == "con") {
+		return (Character::constitution + Character::char_race->con_bonus);
 	}
-	else if (ability == "dex") {
-		return Character::dexterity;
+	else if (ability == "dexterity" | ability == "dex") {
+		return (Character::dexterity + Character::char_race->dex_bonus);
 	}
-	else if (ability == "int") {
-		return Character::intelligence;
+	else if (ability == "intelligence" | ability == "int") {
+		return (Character::intelligence + Character::char_race->int_bonus);
 	}
-	else if (ability == "wis") {
-		return Character::wisdom;
+	else if (ability == "wisdom" | ability == "wis") {
+		return (Character::wisdom + Character::char_race->wis_bonus);
 	}
-	else if (ability == "cha") {
-		return Character::charisma;
+	else if (ability == "charisma" | ability == "cha") {
+		return (Character::charisma + Character::char_race->cha_bonus);
 	}
  	else {
 		return 119;
@@ -63,27 +63,27 @@ int Character::calcFlatFooted() {
 	return 0;
 }
 
-int Character::getSavingThrow(std::string s_throw, CharacterClass char_class) {
-	if (s_throw == "for") {
-		return Character::getModifier(Character::constitution) + char_class.fortitude;
+int Character::getSavingThrow(std::string s_throw) {
+	if (s_throw == "fortitude" | s_throw == "for") {
+		return Character::getModifier(Character::getAbilityScore("con") + Character::char_class->fortitude);
 	}
-	else if (s_throw == "ref") {
-		return Character::getModifier(Character::dexterity) + char_class.reflex;
+	else if (s_throw == "reflex" | s_throw == "ref") {
+		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->reflex;
 	}
-	else if (s_throw == "wil") {
-		return Character::getModifier(Character::wisdom) + char_class.will;
+	else if (s_throw == "will" | s_throw == "wil") {
+		return Character::getModifier(Character::getAbilityScore("wis")) + Character::char_class->will;
 	}
 	else {
 		return 419;
 	}
 }
 
-int Character::getAttackBonus(std::string attack, CharacterClass char_class) {
-	if (attack == "mel") {
-		return Character::getModifier(Character::getAbilityScore("str")) + char_class.base_attack_bonus;
+int Character::getAttackBonus(std::string attack) {
+	if (attack == "melee" | attack == "mel") {
+		return Character::getModifier(Character::getAbilityScore("str")) + Character::char_class->base_attack_bonus;
 	}
-	else if (attack == "ran") {
-		return Character::getModifier(Character::getAbilityScore("dex")) + char_class.base_attack_bonus;
+	else if (attack == "ranged" | attack == "ran") {
+		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->base_attack_bonus;
 	}
 	else {
 		return 419;
@@ -94,7 +94,7 @@ void Character::modXP(std::string op, int val) {
 	if (op == "add") {
 		Character::xp += val;
 	}
-	else if (op == "sub") {
+	else if (op == "sub" | op == "subtract") {
 		Character::xp -= val;
 	}
 	else {
@@ -140,11 +140,37 @@ std::string Character::getSkillName(Skill skill) {
 	return skill.name;
 }
 
-// This initializer would be best for starting a new character, or creating a test character
-Character::Character(CharacterClass* char_class, Race* char_race, std::string name, int str, int dex, int con, int intel, int wis, int cha) // strength, dex, con, int, wis, cha
-{
+bool Character::getSkillFlagStatus(int i) {
+	return Character::char_class->classSkillFlag[i];
+}
+
+void Character::addSkillRank(std::string skill_name, int num_ranks) {
+	for (int i = 0; i < num_skills; i++) {
+		if (Character::char_skills[i]->name == skill_name) {
+			if ((Character::char_skills[i]->ranks + num_ranks) <= Character::char_skills[i]->getMaxRanks(Character::getLevel())) {
+				Character::char_skills[i]->ranks += num_ranks;
+			}
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////
+//////////////			  LEVEL UP			  //////////////////
+////////////////////////////////////////////////////////////////
+
+void Character::levelUp() {
+	ranks_to_use += (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence));
+}
+
+// use this void to set new class values without initializing a new class
+void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha) {
 	Character::char_class = char_class;
 	Character::char_race = char_race;
+
+	for (int i = 0; i < num_skills; i++) {
+		char_skills[i] = char_skill_ptr + i;
+		char_skills[i]->is_class_skill = Character::char_class->classSkillFlag[i];
+	}
 
 	Character::name = name;
 	Character::char_class_name = char_class->name;
@@ -162,6 +188,40 @@ Character::Character(CharacterClass* char_class, Race* char_race, std::string na
 	Character::money[2] = 0;
 	Character::money[3] = 0;
 
+	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence)) * 4; // level 1 ranks
+
+	Character::xp = 0;	// player also shouldn't start with -8k xp
+}
+
+// This initializer would be best for starting a new character, or creating a test character
+Character::Character(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha) // strength, dex, con, int, wis, cha
+{
+	Character::char_class = char_class;
+	Character::char_race = char_race;
+
+	for (int i = 0; i < num_skills; i++) {
+		char_skills[i] = char_skill_ptr + i;
+		char_skills[i]->is_class_skill = Character::char_class->classSkillFlag[i];
+	}
+
+	Character::name = name;
+	Character::char_class_name = char_class->name;
+	Character::race_name = char_race->name;
+
+	Character::strength = str;
+	Character::dexterity = dex;
+	Character::constitution = con;
+	Character::intelligence = intel;
+	Character::wisdom = wis;
+	Character::charisma = cha;
+
+	Character::money[0] = 0; // we don't want the player to start out with -8k money
+	Character::money[1] = 0;
+	Character::money[2] = 0;
+	Character::money[3] = 0;
+
+	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence)) * 4; // level 1 ranks
+
 	Character::xp = 0;	// player also shouldn't start with -8k xp
 }
 
@@ -171,6 +231,7 @@ Character::Character() {
 	Character::strength, Character::dexterity, Character::constitution, Character::intelligence, Character::wisdom, Character::charisma = 0;
 	Character::money[0], Character::money[1], Character::money[2], Character::money[3] = 0;
 	Character::xp = 0;
+	Character::ranks_to_use = 0;
 }
 
 

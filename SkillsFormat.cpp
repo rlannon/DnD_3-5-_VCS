@@ -1,20 +1,20 @@
 #include "SkillsFormat.h"
 #include "FundamentalDataTypes.h"
 
-void saveSkillStructure(std::ostream& file, Skill skill_structure[35]) {
+void saveSkillStructure(std::ostream& file, Skill skill_structure[num_skills]) {
 	// write header and version
 	char * header = "SKILLSf";
 	file.write(header, 7);
 	writeU8(file, skill_version);
 
 	// write skill_structure data
-	for (int i = 0; i < 35; i++) {
+	for (int i = 0; i < num_skills; i++) {
 		writeString(file, skill_structure[i].name);
 		writeString(file, skill_structure[i].ability);
 
-		writeU8(file, skill_structure[i].is_general);
+		writeU8(file, skill_structure[i].untrained);
 
-		std::cout << skill_structure[i].name << ", " << skill_structure[i].ability << ", " << skill_structure[i].is_general << std::endl;
+		std::cout << skill_structure[i].name << ", " << skill_structure[i].ability << ", " << skill_structure[i].untrained << std::endl;
 	}
 }
 
@@ -33,11 +33,11 @@ void loadSkillStructure(std::istream& file, Skill * skill_ptr, std::string* err)
 		
 		// potential version control code here
 
-		for (int i = 0; i < 35; i++) {
+		for (int i = 0; i < num_skills; i++) {
 			(skill_ptr+i)->name = readString(file);
 			(skill_ptr+i)->ability = readString(file);
 
-			(skill_ptr+i)->is_general = readU8(file);
+			(skill_ptr+i)->untrained = readU8(file);
 		}
 
 		*err = "no errors!";

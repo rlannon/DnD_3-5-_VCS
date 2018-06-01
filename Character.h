@@ -19,6 +19,7 @@ class Character
 protected:
 	CharacterClass* char_class;
 	Race* char_race;
+	Skill* char_skills[num_skills];
 
 	std::string name;
 	std::string race_name;
@@ -37,6 +38,9 @@ protected:
 	// combat
 	int initiative_mod;
 
+	// skills
+	int ranks_to_use;
+
 	// misc
 	int money[4]; // money[0] = cp, money[1] = sp, money[2] = gp, money[3] = pp
 public:
@@ -47,7 +51,7 @@ public:
 	void setCharacterRace(Race* char_race);
 	void setCharacterClass(CharacterClass* char_class);
 
-	int getMaxHitPoints(CharacterClass char_class);
+	int getMaxHitPoints();
 	
 	int getAbilityScore(std::string ability);
 	int getModifier(int ability_score);
@@ -55,8 +59,8 @@ public:
 	int calcArmorClass();
 	int calcFlatFooted();
 
-	int getSavingThrow(std::string s_throw, CharacterClass char_class);
-	int getAttackBonus(std::string attack, CharacterClass char_class);
+	int getSavingThrow(std::string s_throw);
+	int getAttackBonus(std::string attack);
 
 	uint8_t getLevel();
 
@@ -64,8 +68,15 @@ public:
 
 	int getSkillModifier(Skill skill);
 	std::string getSkillName(Skill skill);
+	bool getSkillFlagStatus(int i);
 
-	Character(CharacterClass* char_class, Race* char_race, std::string name, int str, int dex, int con, int intel, int wis, int cha);
+	void addSkillRank(std::string skill_name, int num_ranks);
+
+	void levelUp();
+
+	void createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha);
+
+	Character(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha);
 	Character();
 	~Character();
 };

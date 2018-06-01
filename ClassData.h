@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "Skill.h"
 
 /*
 
@@ -20,7 +21,10 @@ class ClassData
 	unsigned short hit_die;
 	unsigned short skill_coefficient;
 
-	bool classSkillFlag[35];
+	bool classSkillFlag[num_skills];
+
+	friend void createClass(Skill skill_structure[num_skills]);
+	friend void loadClassData_RVC(std::istream& file, ClassData* class_obj);
 public:
 	uint8_t getBaseAttackBonus(int n);
 	uint8_t getSavingThrow(std::string s_throw, int n);
@@ -32,6 +36,7 @@ public:
 
 	std::string getName();
 
-	ClassData(std::string name, unsigned short bab[20], unsigned short fortitude[20], unsigned short reflex[20], unsigned short will[20], unsigned short hit_die, unsigned short skill_coefficient, bool classSkillFlag[35]);
+	ClassData(std::string name, unsigned short bab[20], unsigned short fortitude[20], unsigned short reflex[20], unsigned short will[20], unsigned short hit_die, unsigned short skill_coefficient, bool classSkillFlag[num_skills]);
+	ClassData();
 	~ClassData();
 };

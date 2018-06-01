@@ -24,7 +24,7 @@ This library establishes RVC file format, which is to be used for storing all th
 	uint8_t classSkillFlag[35]
 
 	uint32_t len;
-	..."name" string data...
+	string name;
 
 */
 
@@ -32,3 +32,5 @@ const uint8_t rvc_version = 1;
 
 void saveToRVC(std::ostream& file, ClassData class_obj);
 void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);
+
+void loadClassData_RVC(std::istream& file, ClassData* class_obj);

@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "Skill.h"
 
 /*
 
@@ -29,10 +30,10 @@ class CharacterClass
 	void setSavingThrow(std::string s_throw, uint8_t val);
 	void setHitDie(uint8_t val);
 	void setSkillCoefficient(uint8_t val);
-	void setClassSkillFlag(bool skill[35]); // set a specific skill flag
+	void setClassSkillFlag(bool skill[45]); // set a specific skill flag
 	void setName(std::string str);
 
-	bool classSkillFlag[35]; // flags to tell us if a skill is a class skill or not
+	bool classSkillFlag[45]; // flags to tell us if a skill is a class skill or not
 	// for skill flags -- look on D&D SRD 3.5e -- follows Skill class exactly
 
 	friend class Character; // allow class "Character" to access these private members

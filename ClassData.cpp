@@ -36,7 +36,7 @@ std::string ClassData::getName() {
 	return ClassData::name;
 }
 
-ClassData::ClassData(std::string name, unsigned short bab[20], unsigned short fortitude[20], unsigned short reflex[20], unsigned short will[20], unsigned short hit_die, unsigned short skill_coefficient, bool classSkillFlag[35]) {
+ClassData::ClassData(std::string name, unsigned short bab[20], unsigned short fortitude[20], unsigned short reflex[20], unsigned short will[20], unsigned short hit_die, unsigned short skill_coefficient, bool classSkillFlag[num_skills]) {
 	ClassData::name = name;
 
 	for (int i = 0; i < 20; i++) {
@@ -49,9 +49,13 @@ ClassData::ClassData(std::string name, unsigned short bab[20], unsigned short fo
 	ClassData::hit_die = hit_die;
 	ClassData::skill_coefficient = skill_coefficient;
 
-	for (int i = 0; i < 35; i++) {
+	for (int i = 0; i < num_skills; i++) {
 		ClassData::classSkillFlag[i] = classSkillFlag[i];
 	}
+}
+
+ClassData::ClassData() {
+
 }
 
 ClassData::~ClassData() {
