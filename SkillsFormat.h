@@ -23,4 +23,4 @@ These .skills files will contain the array containing all information about clas
 const uint8_t skill_version = 1;
 
 void saveSkillStructure(std::ostream& file, Skill skill_structure[num_skills]); // save "skill" to file
-void loadSkillStructure(std::istream& file, Skill * skill_ptr, std::string* err); // load from file into "skill"
+void loadSkillStructure(std::istream& file, Skill * skill_ptr); // load from file into "skill"

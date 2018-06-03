@@ -6,12 +6,14 @@
 This header lays out all of the necessary functions for writing and reading RVC, VCS, and SKILLS files. It establishes our fundamental data types and functions for reading/writing those types to binary files.
 This header only needs to be included in the .cpp files for a file format specification; the header files shouldn't need any of these functions.
 
+Note that these functions are used for reading and writing *unsigned* 8/16 bit values; for signed values, simply cast the signed integer to an unsigned value before writing and cast back to a signed value after reading.
+
 */
 
-uint8_t readU8(std::istream& file);
-void writeU8(std::ostream& file, uint8_t val); // eliminate these and replace with file.read() and file.write()
+// We need readU8 and writeU8 because of the terminator character -- we can't simply read or write 1 byte with file.write() and file.read().
 
-// NOTE: For signed values, simply cast to uint8_t before writing and cast back to int8_t after reading
+uint8_t readU8(std::istream& file);
+void writeU8(std::ostream& file, uint8_t val);
 
 uint16_t readU16(std::istream& file);
 void writeU16(std::ostream& file, uint16_t val);

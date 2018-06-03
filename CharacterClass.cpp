@@ -15,13 +15,13 @@ void CharacterClass::setBaseAttackBonus(uint8_t val) {
 }
 
 void CharacterClass::setSavingThrow(std::string s_throw, uint8_t val) {
-	if (s_throw == "for") {
+	if (s_throw == "for" || s_throw == "fortitude") {
 		CharacterClass::fortitude = val;
 	}
-	else if (s_throw == "ref") {
+	else if (s_throw == "ref" || s_throw == "reflex") {
 		CharacterClass::reflex = val;
 	}
-	else if (s_throw == "wil") {
+	else if (s_throw == "wil" || s_throw == "will") {
 		CharacterClass::will = val;
 	}
 	else {

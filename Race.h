@@ -19,7 +19,7 @@ class Race
 
 	// allow our file format to modify this data
 	friend void saveToRVR(std::ostream& file, Race race);
-	friend void loadRVR(std::istream& file, Race* race, std::string* err);
+	friend void loadRVR(std::istream& file, Race* race);
 	friend void saveToVCS(std::ostream& file, Character character);
 public:
 	Race(std::string name, int str_bonus, int dex_bonus, int con_bonus, int int_bonus, int wis_bonus, int cha_bonus, std::string lang);

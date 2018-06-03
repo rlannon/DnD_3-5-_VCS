@@ -27,7 +27,7 @@ int main() {
 
 	This program uses codes for error tracking. A string() function will return an error message.
 	string() functions shoud follow this with the proper int() error code.
-	int() functions will use 3-digit error codes. The following is a list to describe them:
+	int() and uint8_t() functions will use 3-digit error codes. The following is a list to describe them:
 
 	First digit:
 		0 - type uint8_t, no first digit
@@ -43,14 +43,11 @@ int main() {
 	Third digit:
 		9 - bad input
 
-	Additionally, some functions require a 3-character code for execution. This will either be the first three letters of the ability name or the saving throw name. This makes it easier for you when you want to select an attribute rather than trying to remember/find the correct number.
-	For example, character.getAbilityScore("str") returns character.strength.
-
-	The functions now use strings, so you can use the 3-character code OR the full name -- for example,
+	Additionally, some functions require a code for execution. The functions use strings, so you can use the 3-character code (the old way) OR the full name -- for example,
 			character.getAbilityScore("str")
 		and
 			character.getAbilityScore("strength")
-		are both acceptable
+		are both acceptable. Note the full names and the three-letter codes ALWAYS use lowercase.
 
 	*/
 
@@ -60,6 +57,8 @@ int main() {
 	Skill skill_structure[num_skills];
 	Skill* skill_ptr = &skill_structure[0];
 
+	ClassData temp_data;
+
 	std::string err = "";
 
 	int c;
@@ -68,7 +67,7 @@ int main() {
 	std::ifstream racefile;
 	racefile.open("data/Dwarf.rvr", std::ios::in | std::ios::binary);
 	if (racefile.is_open()) {
-		loadRVR(racefile, &char_race, &err);
+		loadRVR(racefile, &char_race);
 		racefile.close();
 	}
 	else {
@@ -78,7 +77,7 @@ int main() {
 	std::ifstream classfile;
 	classfile.open("data/Barbarian.rvc", std::ios::in | std::ios::binary);
 	if (classfile.is_open()) {
-		loadRVC(classfile, &char_class, 0, &err);
+		loadRVC(classfile, &char_class, 0);
 		classfile.close();
 	}
 	else {
@@ -88,7 +87,7 @@ int main() {
 	std::ifstream skillfile;
 	skillfile.open("data/skills.skills", std::ios::in | std::ios::binary);
 	if (skillfile.is_open()) {
-		loadSkillStructure(skillfile, skill_ptr, &err);
+		loadSkillStructure(skillfile, skill_ptr);
 		skillfile.close();
 	}
 	else {
@@ -134,7 +133,7 @@ void printCharSheet(Character character, CharacterClass char_class, Skill skill[
 		<< "Fortitude: \t" << character.getSavingThrow("for") << std::endl
 		<< "Reflex: \t" << character.getSavingThrow("ref") << std::endl
 		<< "Will: \t" << character.getSavingThrow("wil") << std::endl << std::endl;
-	// this for loop will only list skills the player can use
+	// this 'for' loop will only list skills the player can use
 	for (int i = 0; i < num_skills; i++) {
 		if (character.getSkillFlagStatus(i) || skill[i].isUntrained()) {
 			std::cout << character.getSkillName(skill[i]) << ": " << character.getSkillModifier(skill[i]) << std::endl;

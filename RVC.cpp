@@ -40,7 +40,7 @@ void saveToRVC(std::ostream& file, ClassData class_obj) {
 	writeString(file, class_obj.getName());
 }
 
-void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err) {
+void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level) {
 	char header[4];
 	char * buffer = &header[0];
 	uint8_t vers;
@@ -100,11 +100,8 @@ void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::
 
 		// read name
 		class_obj->setName(readString(file));
-
-		*err = "no errors in RVC file!";
 	}
 	else {
-		*err = "error: incorrect file type!";
 		return;
 	}
 }

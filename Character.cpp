@@ -32,22 +32,22 @@ int Character::getModifier(int ability_score) {
 }
 
 int Character::getAbilityScore(std::string ability) {
-	if (ability == "strength" | ability == "str") {
+	if (ability == "strength" || ability == "str") {
 		return (Character::strength + Character::char_race->str_bonus);
 	}
-	else if (ability == "constitution" | ability == "con") {
+	else if (ability == "constitution" || ability == "con") {
 		return (Character::constitution + Character::char_race->con_bonus);
 	}
-	else if (ability == "dexterity" | ability == "dex") {
+	else if (ability == "dexterity" || ability == "dex") {
 		return (Character::dexterity + Character::char_race->dex_bonus);
 	}
-	else if (ability == "intelligence" | ability == "int") {
+	else if (ability == "intelligence" || ability == "int") {
 		return (Character::intelligence + Character::char_race->int_bonus);
 	}
-	else if (ability == "wisdom" | ability == "wis") {
+	else if (ability == "wisdom" || ability == "wis") {
 		return (Character::wisdom + Character::char_race->wis_bonus);
 	}
-	else if (ability == "charisma" | ability == "cha") {
+	else if (ability == "charisma" || ability == "cha") {
 		return (Character::charisma + Character::char_race->cha_bonus);
 	}
  	else {
@@ -64,13 +64,13 @@ int Character::calcFlatFooted() {
 }
 
 int Character::getSavingThrow(std::string s_throw) {
-	if (s_throw == "fortitude" | s_throw == "for") {
+	if (s_throw == "fortitude" || s_throw == "for") {
 		return Character::getModifier(Character::getAbilityScore("con") + Character::char_class->fortitude);
 	}
-	else if (s_throw == "reflex" | s_throw == "ref") {
+	else if (s_throw == "reflex" || s_throw == "ref") {
 		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->reflex;
 	}
-	else if (s_throw == "will" | s_throw == "wil") {
+	else if (s_throw == "will" || s_throw == "wil") {
 		return Character::getModifier(Character::getAbilityScore("wis")) + Character::char_class->will;
 	}
 	else {
@@ -79,10 +79,10 @@ int Character::getSavingThrow(std::string s_throw) {
 }
 
 int Character::getAttackBonus(std::string attack) {
-	if (attack == "melee" | attack == "mel") {
+	if (attack == "melee" || attack == "mel") {
 		return Character::getModifier(Character::getAbilityScore("str")) + Character::char_class->base_attack_bonus;
 	}
-	else if (attack == "ranged" | attack == "ran") {
+	else if (attack == "ranged" || attack == "ran") {
 		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->base_attack_bonus;
 	}
 	else {
@@ -94,7 +94,7 @@ void Character::modXP(std::string op, int val) {
 	if (op == "add") {
 		Character::xp += val;
 	}
-	else if (op == "sub" | op == "subtract") {
+	else if (op == "sub" || op == "subtract") {
 		Character::xp -= val;
 	}
 	else {
@@ -119,14 +119,14 @@ uint8_t Character::getLevel() {
 		xp_req += i * 1000;
 		if (Character::xp == xp_req) {
 			lvl = i;
-			break;
+			break; // once this happens, break from the 'for' loop
 		}
 		else if (Character::xp > xp_req) {
 			continue; // go back to the top of the loop; not done checking
 		}
 		else if (Character::xp < xp_req) {
 			lvl = i - 1;
-			break;
+			break; // once this happens, break from the 'for' loop -- but always check the above two first
 		}
 	}
 	return lvl;
@@ -154,12 +154,49 @@ void Character::addSkillRank(std::string skill_name, int num_ranks) {
 	}
 }
 
+void Character::increaseAbilityScore(std::string name) {
+	if (Character::ability_score_increase_flag) {
+		if (name == "strength" || name == "str") {
+			Character::strength++;
+			Character::ability_score_increase_flag = false;
+		}
+		else if (name == "dexterity" || name == "dex") {
+			Character::dexterity++;
+			Character::ability_score_increase_flag = false;
+		}
+		else if (name == "constitution" || name == "con") {
+			Character::constitution++;
+			Character::ability_score_increase_flag = false;
+		}
+		else if (name == "intelligence" || name == "int") {
+			Character::intelligence++;
+			Character::ability_score_increase_flag = false;
+		}
+		else if (name == "wisdom" || name == "wis") {
+			Character::wisdom++;
+			Character::ability_score_increase_flag = false;
+		}
+		else if (name == "charisma" || name == "cha") {
+			Character::charisma++;
+			Character::ability_score_increase_flag = false;
+		}
+	}
+}
+
 ////////////////////////////////////////////////////////////////
 //////////////			  LEVEL UP			  //////////////////
 ////////////////////////////////////////////////////////////////
 
 void Character::levelUp() {
+	// add skill ranks
 	ranks_to_use += (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence));
+	// check to see if we need to add an ability score increase
+	if (Character::getLevel() % 4 == 0) {
+		Character::ability_score_increase_flag = true;
+	}
+	if (Character::getLevel() % 3 == 0) {
+		Character::add_feat_flag = true;
+	}
 }
 
 // use this void to set new class values without initializing a new class
@@ -189,6 +226,8 @@ void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, 
 	Character::money[3] = 0;
 
 	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence)) * 4; // level 1 ranks
+	Character::ability_score_increase_flag = false;
+	Character::add_feat_flag = false;
 
 	Character::xp = 0;	// player also shouldn't start with -8k xp
 }
@@ -221,6 +260,8 @@ Character::Character(CharacterClass* char_class, Race* char_race, Skill* char_sk
 	Character::money[3] = 0;
 
 	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence)) * 4; // level 1 ranks
+	Character::ability_score_increase_flag = false;
+	Character::add_feat_flag = false;
 
 	Character::xp = 0;	// player also shouldn't start with -8k xp
 }
@@ -232,6 +273,8 @@ Character::Character() {
 	Character::money[0], Character::money[1], Character::money[2], Character::money[3] = 0;
 	Character::xp = 0;
 	Character::ranks_to_use = 0;
+	Character::ability_score_increase_flag = false;
+	Character::add_feat_flag = false;
 }
 
 

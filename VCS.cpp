@@ -29,7 +29,7 @@ void saveToVCS(std::ostream& file, Character character) {
 	writeU16(file, (uint16_t)character.money[3]); // pp
 }
 
-void loadVCS(std::istream& file, Character* character, std::string* err) {
+void loadVCS(std::istream& file, Character* character) {
 	char header[7];
 	char * buffer = &header[0];
 	uint8_t vers;
@@ -65,10 +65,8 @@ void loadVCS(std::istream& file, Character* character, std::string* err) {
 		character->money[1] = readU16(file); // sp
 		character->money[2] = readU16(file); // gp
 		character->money[3] = readU16(file); // pp
-		
-		*err = "no errors!";
 	}
 	else {
-		*err = "error: incorrect file format";
+		return;
 	}
 }

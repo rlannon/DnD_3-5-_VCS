@@ -22,7 +22,7 @@ void saveToRVR(std::ostream& file, Race race) {
 	writeString(file, race.known_languages);
 }
 
-void loadRVR(std::istream& file, Race* race, std::string* err) {
+void loadRVR(std::istream& file, Race* race) {
 	char header[4];
 	char * buffer = &header[0];
 	uint8_t version;
@@ -43,10 +43,8 @@ void loadRVR(std::istream& file, Race* race, std::string* err) {
 		race->cha_bonus = (int8_t)readU8(file);
 
 		race->known_languages = readString(file);
-
-		*err = "no errors in RVR file!";
 	}
 	else {
-		*err = "error: incorrect file format! file header does not match \"RVRF\"!";
+		return;
 	}
 }

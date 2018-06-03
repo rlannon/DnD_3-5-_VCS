@@ -4,12 +4,13 @@ void createRace() {
 	std::string name;
 	int bonuses[6];
 	std::string langs;
-	int c;
 
 	std::cout << "Name: ";
+	std::cin.ignore();
 	std::getline(std::cin, name);
 
 	std::cout << "Languages: ";
+	std::cin.ignore();
 	std::getline(std::cin, langs);
 
 	std::cout << "Bonuses (str, dex, con, int, wis, cha):" << std::endl;
@@ -50,12 +51,14 @@ void createClass(Skill skill_structure[num_skills]) {
 	const unsigned short poor_save[20] = { 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6 };
 
 	std::cout << "Class Name: " << std::endl;
+	std::cin.ignore();
 	std::getline(std::cin, name);
 
 	new_class.name = name;
 
 	std::cout << "[1] Good, [2] Average, or [3] Poor BAB?";
 	std::cin >> c;
+
 	if (c == 1) {
 		for (int i = 0; i < 20; i++) {
 			new_class.base_attack_bonus[i] = good_bab[i];
@@ -171,11 +174,17 @@ void createSkill() {
 		std::string c;
 
 		std::cout << "Skill Name: ";
+		std::cin.ignore();
 		std::getline(std::cin, name);
+
 		std::cout << "Key Ability: ";
+		std::cin.ignore();
 		std::getline(std::cin, ability);
+
 		std::cout << "Untrained? ";
+		std::cin.ignore();
 		std::getline(std::cin, c);
+
 		if (c == "yes") {
 			untrained = true;
 		}
@@ -199,12 +208,14 @@ void createSkill() {
 	}
 }
 
-void modClass() {
+void modClass(Skill skill_structure[num_skills]) {
 	ClassData temp;
 	std::ifstream classfile;
 	std::string classname;
 
-	int i = 1;
+	std::string skillname;
+
+	int n = 1;
 	int c;
 
 	std::cout << "Which class would you like to modify?" << std::endl;
@@ -222,7 +233,11 @@ void modClass() {
 	std::ofstream rvcsave;
 	rvcsave.open("data/" + classname + ".rvc", std::ios::out | std::ios::binary);
 
-	while (i > 0) {
+	while (n > 0) {
+		int s_c;
+		short good_save[20] = { 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
+		short poor_save[20] = { 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6 };
+
 		std::cout << "What do you want to modify?" << std::endl
 			<< "[1] Name" << std::endl
 			<< "[2] BAB" << std::endl
@@ -230,26 +245,138 @@ void modClass() {
 			<< "[4] Skill Flags" << std::endl
 			<< "[5] Hit Die" << std::endl
 			<< "[6] Skill Coefficient" << std::endl
-			<< std::endl << "[7] Nevermind " << std::endl;
+			<< std::endl << "[7] Nothing, I'm done" << std::endl;
 		std::cin >> c;
 		switch (c) {
 		case 1:
-			std::getline(std::cin, classname);
 			std::cout << "New name: ";
+			std::cin.ignore();
 			std::getline(std::cin, classname);
 			break;
 		case 2:
+			std::cout << "New BAB?" << std::endl
+				<< "[1] Good" << std::endl
+				<< "[2] Average" << std::endl
+				<< "[3] Poor" << std::endl;
+			std::cin >> s_c;
+			if (s_c == 1) {
+				short good_bab[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+				for (int i = 0; i < 20; i++) {
+					temp.base_attack_bonus[i] = good_bab[i];
+				}
+			}
+			else if (s_c == 2) {
+				short avg_bab[20] = { 0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15 };
+				for (int i = 0; i < 20; i++) {
+					temp.base_attack_bonus[i] = avg_bab[i];
+				}
+			}
+			else if (s_c == 3) {
+				short poor_bab[20] = { 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10 };
+				for (int i = 0; i < 20; i++) {
+					temp.base_attack_bonus[i] = poor_bab[i];
+				}
+			}
+			else {
+				std::cout << "invalid selection!" << std::endl;
+			}
 			break;
 		case 3:
+			std::cout << "New Fortitude: " << std::endl
+				<< "\t[1] Good" << std::endl
+				<< "\t[2] Poor" << std::endl;
+			std::cin >> s_c;
+			if (s_c == 1) {
+				for (int i = 0; i < 20; i++) {
+					temp.fortitude[i] = good_save[i];
+				}
+			}
+			else if (s_c == 2) {
+				for (int i = 0; i < 20; i++) {
+					temp.fortitude[i] = poor_save[i];
+				}
+			}
+			else {
+				std::cout << "invalid selection!" << std::endl;
+				break;
+			}
+
+			std::cout << "New Reflex: " << std::endl
+				<< "\t[1] Good" << std::endl
+				<< "\t[2] Poor" << std::endl;
+			std::cin >> s_c;
+			if (s_c == 1) {
+				for (int i = 0; i < 20; i++) {
+					temp.reflex[i] = good_save[i];
+				}
+			}
+			else if (s_c == 2) {
+				for (int i = 0; i < 20; i++) {
+					temp.reflex[i] = poor_save[i];
+				}
+			}
+			else {
+				std::cout << "invalid selection!" << std::endl;
+				break;
+			}
+
+			std::cout << "New Will: " << std::endl
+				<< "\t[1] Good" << std::endl
+				<< "\t[2] Poor" << std::endl;
+			std::cin >> s_c;
+			if (s_c == 1) {
+				for (int i = 0; i < 20; i++) {
+					temp.will[i] = good_save[i];
+				}
+			}
+			else if (s_c == 2) {
+				for (int i = 0; i < 20; i++) {
+					temp.will[i] = poor_save[i];
+				}
+			}
+			else {
+				std::cout << "invalid selection!" << std::endl;
+				break;
+			}
+
 			break;
 		case 4:
+			std::cout << "What skill would you like to edit?" << std::endl;
+			std::cin.ignore();
+			std::getline(std::cin, skillname);
+			for (int i = 0; i < num_skills; i++) {
+				if (skill_structure[i].getSkillName() == skillname) {
+					char yn;
+					std::cout << "Is this a class skill? [y/n]" << std::endl;
+					std::cin >> yn;
+					if (yn == 'y') {
+						temp.classSkillFlag[i] = true;
+					}
+					else if (yn == 'n') {
+						temp.classSkillFlag[i] = false;
+					}
+					else {
+						std::cout << "invalid selection!" << std::endl;
+					}
+					break;
+				}
+				else {
+					continue;
+				}
+			}
 			break;
 		case 5:
+			std::cout << "New Hit Die: d";
+			std::cin >> s_c;
+			temp.hit_die = s_c;
 			break;
 		case 6:
+			std::cout << "New Skill Coefficient: ";
+			std::cin >> s_c;
+			temp.skill_coefficient = s_c;
 			break;
 		case 7:
-			i--;
+			n--;
 			break;
 		}
 	}
@@ -268,7 +395,9 @@ void utility() {
 
 	Skill skill_structure[num_skills];
 	Skill* skill_ptr = &skill_structure[0];
-	
+
+	std::ifstream skillfile;
+
 	int i = 1;
 	short ch;
 
@@ -285,28 +414,29 @@ void utility() {
 
 		if (ch == 1) {
 			// create race
-			std::getline(std::cin, err); // to prevent an err
 			createRace();
 		}
 		else if (ch == 2) {
-			// create class
-			std::getline(std::cin, err); // to prevent an err
-			std::ifstream skillfile;
+			// create class			
 			skillfile.open("data/skills.skills", std::ios::in, std::ios::binary);
 			if (skillfile.is_open()) {
-				loadSkillStructure(skillfile, skill_ptr, &err);
+				loadSkillStructure(skillfile, skill_ptr);
 				skillfile.close();
 			}
 			createClass(skill_structure);
 		}
 		else if (ch == 3) {
 			// create skill
-			std::getline(std::cin, err); // to prevent an err
 			createSkill();
 		}
 		else if (ch == 4) {
+			skillfile.open("data/skills.skills", std::ios::in, std::ios::binary);
+			if (skillfile.is_open()) {
+				loadSkillStructure(skillfile, skill_ptr);
+				skillfile.close();
+			}
 			std::getline(std::cin, err);
-			modClass();
+			modClass(skill_structure);
 		}
 		else if (ch == 5) {
 			i--;

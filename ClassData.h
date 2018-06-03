@@ -24,6 +24,7 @@ class ClassData
 	bool classSkillFlag[num_skills];
 
 	friend void createClass(Skill skill_structure[num_skills]);
+	friend void modClass(Skill skill_structure[num_skills]);
 	friend void loadClassData_RVC(std::istream& file, ClassData* class_obj);
 public:
 	uint8_t getBaseAttackBonus(int n);

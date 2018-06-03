@@ -15,7 +15,7 @@ This class is a way to track all data about the player. It relies on other class
 class Character
 {
 	friend void saveToVCS(std::ostream& file, Character character);
-	friend void loadVCS(std::istream& file, Character* character, std::string* err);
+	friend void loadVCS(std::istream& file, Character* character);
 protected:
 	CharacterClass* char_class;
 	Race* char_race;
@@ -38,8 +38,10 @@ protected:
 	// combat
 	int initiative_mod;
 
-	// skills
+	// level up data
 	int ranks_to_use;
+	bool ability_score_increase_flag;
+	bool add_feat_flag;
 
 	// misc
 	int money[4]; // money[0] = cp, money[1] = sp, money[2] = gp, money[3] = pp
@@ -71,6 +73,7 @@ public:
 	bool getSkillFlagStatus(int i);
 
 	void addSkillRank(std::string skill_name, int num_ranks);
+	void increaseAbilityScore(std::string name);
 
 	void levelUp();
 

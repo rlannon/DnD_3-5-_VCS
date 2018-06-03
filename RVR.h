@@ -29,4 +29,4 @@ Refer to RVC, VCS, and SkillsFormat for questions regarding the code in this fil
 const uint8_t rvr_version = 1;
 
 void saveToRVR(std::ostream& file, Race race);
-void loadRVR(std::istream& file, Race* race, std::string* err);
+void loadRVR(std::istream& file, Race* race);

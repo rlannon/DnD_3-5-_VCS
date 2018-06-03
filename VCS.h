@@ -36,4 +36,4 @@ The VCS format is at the center of this program; it is what we use to save insta
 const uint8_t vcs_version = 1;
 
 void saveToVCS(std::ostream& file, Character character);
-void loadVCS(std::istream& file, Character* character, std::string* err);
+void loadVCS(std::istream& file, Character* character);

@@ -38,7 +38,7 @@ class CharacterClass
 
 	friend class Character; // allow class "Character" to access these private members
 	friend class Skill; // allow class 'Skill' to access these private members
-	friend void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level, std::string* err);
+	friend void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level);
 public:
 	CharacterClass(std::string name,  short base_attack_bonus, unsigned short fortitude, unsigned short reflex, unsigned short will, unsigned short hit_die, unsigned short skill_coefficient);
 	CharacterClass();

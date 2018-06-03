@@ -6,13 +6,13 @@ uint8_t ClassData::getBaseAttackBonus(int n) {
 }
 
 uint8_t ClassData::getSavingThrow(std::string s_throw, int n) {
-	if (s_throw == "for") {
+	if (s_throw == "for" || s_throw == "fortitude") {
 		return (uint8_t)ClassData::fortitude[n];
 	}
-	else if (s_throw == "ref") {
+	else if (s_throw == "ref" || s_throw == "reflex") {
 		return (uint8_t)ClassData::reflex[n];
 	}
-	else if (s_throw == "wil") {
+	else if (s_throw == "wil" || s_throw == "will") {
 		return (uint8_t)ClassData::will[n];
 	}
 	else {

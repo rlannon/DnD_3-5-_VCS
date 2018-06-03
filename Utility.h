@@ -13,6 +13,6 @@ void createRace();
 void createClass(Skill skill_structure[num_skills]);
 void createSkill();
 
-void modClass();
+void modClass(Skill skill_structure[num_skills]);
 
 void utility();

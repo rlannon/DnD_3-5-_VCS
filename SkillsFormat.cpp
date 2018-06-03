@@ -18,7 +18,7 @@ void saveSkillStructure(std::ostream& file, Skill skill_structure[num_skills]) {
 	}
 }
 
-void loadSkillStructure(std::istream& file, Skill * skill_ptr, std::string* err) {
+void loadSkillStructure(std::istream& file, Skill * skill_ptr) {
 	// load header and version
 	char header[7];
 	char * buffer = header;
@@ -39,10 +39,8 @@ void loadSkillStructure(std::istream& file, Skill * skill_ptr, std::string* err)
 
 			(skill_ptr+i)->untrained = readU8(file);
 		}
-
-		*err = "no errors!";
 	}
 	else {
-		*err = "error: incorrect file format";
+		return;
 	}
 }

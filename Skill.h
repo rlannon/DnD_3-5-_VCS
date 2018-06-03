@@ -16,7 +16,7 @@ class Skill
 
 	friend class Character; // allow class Character to access these private members
 	friend void saveSkillStructure(std::ostream& file, Skill skill_structure[num_skills]);
-	friend void loadSkillStructure(std::istream& file, Skill * skill_structure, std::string* err);
+	friend void loadSkillStructure(std::istream& file, Skill * skill_structure);
 	friend void createSkill();
 public:
 	void setClassSkill(bool is_class_skill);
