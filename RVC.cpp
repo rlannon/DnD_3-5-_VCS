@@ -55,8 +55,6 @@ void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level) {
 		// get the version from the file
 		vers = readU8(file);
 
-		// write code to control for version here, if desired
-
 		/*
 
 		BRIEF EXPLANATION OF THE FOLLOWING CODE:
@@ -68,40 +66,47 @@ void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level) {
 
 		*/
 
-		file.seekg(+level, std::ios::cur);	// seek to current level bab data
-		class_obj->setBaseAttackBonus(readU8(file));
-		file.seekg(+(19 - level), std::ios::cur); // seek across the remaining bytes for bab data
+		if (vers == 1) {
+			// if we are reading a version 1 file, use the following code
 
-		// do the same for for, ref, and wil
-		file.seekg(+level, std::ios::cur);
-		class_obj->setSavingThrow("for", readU8(file));
-		file.seekg(+(19 - level), std::ios::cur);
+			file.seekg(+level, std::ios::cur);	// seek to current level bab data
+			class_obj->setBaseAttackBonus(readU8(file));
+			file.seekg(+(19 - level), std::ios::cur); // seek across the remaining bytes for bab data
 
-		file.seekg(+level, std::ios::cur);
-		class_obj->setSavingThrow("ref", readU8(file));
-		file.seekg(+(19 - level), std::ios::cur);
+			// do the same for for, ref, and wil
+			file.seekg(+level, std::ios::cur);
+			class_obj->setSavingThrow("for", readU8(file));
+			file.seekg(+(19 - level), std::ios::cur);
 
-		file.seekg(+level, std::ios::cur);
-		class_obj->setSavingThrow("wil", readU8(file));
-		file.seekg(+(19 - level), std::ios::cur);
+			file.seekg(+level, std::ios::cur);
+			class_obj->setSavingThrow("ref", readU8(file));
+			file.seekg(+(19 - level), std::ios::cur);
 
-		// read hd
-		class_obj->setHitDie(readU8(file));
+			file.seekg(+level, std::ios::cur);
+			class_obj->setSavingThrow("wil", readU8(file));
+			file.seekg(+(19 - level), std::ios::cur);
 
-		// read skill coefficient
-		class_obj->setSkillCoefficient(readU8(file));
+			// read hd
+			class_obj->setHitDie(readU8(file));
 
-		// read class skill flags
-		//This procedure is pretty simple; we get the U8 value from the file, cast it to bool, and store the values in our flagBuffer array. We then copy our flagBuffer array, containing the class skill flags, and copy it to our character class instance.
-		for (int i = 0; i < num_skills; i++) {
-			flagBuffer[i] = (bool*)readU8(file);
+			// read skill coefficient
+			class_obj->setSkillCoefficient(readU8(file));
+
+			// read class skill flags
+			//This procedure is pretty simple; we get the U8 value from the file, cast it to bool, and store the values in our flagBuffer array. We then copy our flagBuffer array, containing the class skill flags, and copy it to our character class instance.
+			for (int i = 0; i < num_skills; i++) {
+				flagBuffer[i] = (bool*)readU8(file);
+			}
+			class_obj->setClassSkillFlag(flagBuffer);
+
+			// read name
+			class_obj->setName(readString(file));
 		}
-		class_obj->setClassSkillFlag(flagBuffer);
-
-		// read name
-		class_obj->setName(readString(file));
+		else if (vers == 2) {
+			// if we have a version 2 file, read the file this way
+		}
 	}
-	else {
+	else { // incorrect file format
 		return;
 	}
 }
@@ -116,32 +121,39 @@ void loadClassData_RVC(std::istream& file, ClassData* class_obj) {
 	if (header[0, 1, 2, 3] = *"R", "V", "C", "f") {
 		vers = readU8(file);
 
-		// get base attack
-		for (int i = 0; i < 20; i++) {
-			class_obj->base_attack_bonus[i] = readU8(file);
+		if (vers == 1) {
+			// version 1 rvc file
+
+			// get base attack
+			for (int i = 0; i < 20; i++) {
+				class_obj->base_attack_bonus[i] = readU8(file);
+			}
+			// for, ref, will
+			for (int i = 0; i < 20; i++) {
+				class_obj->fortitude[i] = readU8(file);
+			}
+			for (int i = 0; i < 20; i++) {
+				class_obj->reflex[i] = readU8(file);
+			}
+			for (int i = 0; i < 20; i++) {
+				class_obj->will[i] = readU8(file);
+			}
+			// hd
+			class_obj->hit_die = readU8(file);
+			// skill coefficient
+			class_obj->skill_coefficient = readU8(file);
+			// skill flags
+			for (int i = 0; i < num_skills; i++) {
+				class_obj->classSkillFlag[i] = (bool)readU8(file);
+			}
+			// name
+			class_obj->name = readString(file);
 		}
-		// for, ref, will
-		for (int i = 0; i < 20; i++) {
-			class_obj->fortitude[i] = readU8(file);
+		else if (vers == 2) {
+			// version 2 rvc file
 		}
-		for (int i = 0; i < 20; i++) {
-			class_obj->reflex[i] = readU8(file);
-		}
-		for (int i = 0; i < 20; i++) {
-			class_obj->will[i] = readU8(file);
-		}
-		// hd
-		class_obj->hit_die = readU8(file);
-		// skill coefficient
-		class_obj->skill_coefficient = readU8(file);
-		// skill flags
-		for (int i = 0; i < num_skills; i++) {
-			class_obj->classSkillFlag[i] = (bool)readU8(file);
-		}
-		// name
-		class_obj->name = readString(file);
 	}
-	else {
+	else { // incorrect file type
 		return;
 	}
 }

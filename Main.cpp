@@ -6,6 +6,7 @@
 #include "CharacterClass.h"
 #include "ClassData.h"
 #include "Skill.h"
+#include "Spell.h"
 
 // File Formats
 #include "FundamentalDataTypes.h"
@@ -17,7 +18,8 @@
 // Other
 #include "Utility.h"
 
-void printCharSheet(Character character, CharacterClass char_class, Skill skill[num_skills]); // for debug only
+// debug function
+void printCharSheet(Character character, CharacterClass char_class, Skill skill[num_skills]);
 
 int main() {
 
@@ -56,6 +58,7 @@ int main() {
 	CharacterClass char_class;
 	Skill skill_structure[num_skills];
 	Skill* skill_ptr = &skill_structure[0];
+	Spell new_spell("Blindness/Deafness", "Bard, Cleric, Sorcerer/Wizard", 2, "V", "1 standard action", "Medium (100 ft + 10 ft/level)", "One living creature", "Permanent (D)", "Fortitude negates", true);
 
 	ClassData temp_data;
 

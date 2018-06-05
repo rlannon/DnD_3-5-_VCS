@@ -5,6 +5,7 @@
 #include "Race.h"
 #include "Skill.h"
 #include "CharacterClass.h"
+#include "Spell.h"
 
 /*
 
@@ -38,6 +39,10 @@ protected:
 	// combat
 	int initiative_mod;
 
+	// magic
+	short spells_per_day_by_level[10];
+	short spells_known_by_level[10];
+
 	// level up data
 	int ranks_to_use;
 	bool ability_score_increase_flag;
@@ -52,33 +57,39 @@ public:
 
 	void setCharacterRace(Race* char_race);
 	void setCharacterClass(CharacterClass* char_class);
-
-	int getMaxHitPoints();
 	
+	// abilities
 	int getAbilityScore(std::string ability);
 	int getModifier(int ability_score);
+	void increaseAbilityScore(std::string name);
 
+	// combat
+	int getMaxHitPoints();
 	int calcArmorClass();
 	int calcFlatFooted();
-
-	int getSavingThrow(std::string s_throw);
 	int getAttackBonus(std::string attack);
 
+	// magic
+	Spell getSpell(std::string spell_name);
+
+	// saving throws
+	int getSavingThrow(std::string s_throw);
+
+	// level functions
 	uint8_t getLevel();
-
 	void modXP(std::string op, int val);
+	void levelUp();
 
+	// skill functions
 	int getSkillModifier(Skill skill);
 	std::string getSkillName(Skill skill);
 	bool getSkillFlagStatus(int i);
-
 	void addSkillRank(std::string skill_name, int num_ranks);
-	void increaseAbilityScore(std::string name);
 
-	void levelUp();
-
+	// use this to create a new character on the same instance of Character
 	void createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha);
 
+	// constructors/destructor
 	Character(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha);
 	Character();
 	~Character();

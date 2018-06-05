@@ -21,15 +21,7 @@ void Character::setCharacterClass(CharacterClass* char_class) {
 	Character::char_class = char_class;
 }
 
-// GET VALUES
-
-int Character::getMaxHitPoints() {
-	return (((int)Character::getLevel()+1) * (Character::getModifier(Character::getAbilityScore("con")) + Character::char_class->hit_die));
-}
-
-int Character::getModifier(int ability_score) {
-	return ((ability_score - 10) / 2);
-}
+// ABILITIES
 
 int Character::getAbilityScore(std::string ability) {
 	if (ability == "strength" || ability == "str") {
@@ -55,103 +47,8 @@ int Character::getAbilityScore(std::string ability) {
 	}
 }
 
-int Character::calcArmorClass() {
-	return 0;
-}
-
-int Character::calcFlatFooted() {
-	return 0;
-}
-
-int Character::getSavingThrow(std::string s_throw) {
-	if (s_throw == "fortitude" || s_throw == "for") {
-		return Character::getModifier(Character::getAbilityScore("con") + Character::char_class->fortitude);
-	}
-	else if (s_throw == "reflex" || s_throw == "ref") {
-		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->reflex;
-	}
-	else if (s_throw == "will" || s_throw == "wil") {
-		return Character::getModifier(Character::getAbilityScore("wis")) + Character::char_class->will;
-	}
-	else {
-		return 419;
-	}
-}
-
-int Character::getAttackBonus(std::string attack) {
-	if (attack == "melee" || attack == "mel") {
-		return Character::getModifier(Character::getAbilityScore("str")) + Character::char_class->base_attack_bonus;
-	}
-	else if (attack == "ranged" || attack == "ran") {
-		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->base_attack_bonus;
-	}
-	else {
-		return 419;
-	}
-}
-
-void Character::modXP(std::string op, int val) {
-	if (op == "add") {
-		Character::xp += val;
-	}
-	else if (op == "sub" || op == "subtract") {
-		Character::xp -= val;
-	}
-	else {
-		return;
-	}
-}
-
-// getLevel() returns the character's level given their current xp;
-uint8_t Character::getLevel() {
-	int xp_req = 0;
-	int lvl = 0;
-	/*
-	The amount of xp needed to reach the next level is adding (current_level * 1000) to your xp. Given that a formula exists, we can write an algorithm to calculate the current level based on xp. We will have to use a for() loop. The algorithm is as follows:
-		1. calculate xp needed to achieve the current level for our iterator, i, storing in xp_req;
-		2. check whether player's xp is greater than that experience;
-			a. if the player's xp is greater than xp_req, increment i and go back to step 1;
-			b. if the player's xp is less than xp_req, lvl = i-1;
-			c. if the player's xp is /exactly equal/ to xp_req, lvl = i;
-	*/
-
-	for (int i = 1; i < 21; i++) {
-		xp_req += i * 1000;
-		if (Character::xp == xp_req) {
-			lvl = i;
-			break; // once this happens, break from the 'for' loop
-		}
-		else if (Character::xp > xp_req) {
-			continue; // go back to the top of the loop; not done checking
-		}
-		else if (Character::xp < xp_req) {
-			lvl = i - 1;
-			break; // once this happens, break from the 'for' loop -- but always check the above two first
-		}
-	}
-	return lvl;
-}
-
-int Character::getSkillModifier(Skill skill) {
-	return (skill.ranks + (Character::getModifier(Character::getAbilityScore(skill.ability))));
-}
-
-std::string Character::getSkillName(Skill skill) {
-	return skill.name;
-}
-
-bool Character::getSkillFlagStatus(int i) {
-	return Character::char_class->classSkillFlag[i];
-}
-
-void Character::addSkillRank(std::string skill_name, int num_ranks) {
-	for (int i = 0; i < num_skills; i++) {
-		if (Character::char_skills[i]->name == skill_name) {
-			if ((Character::char_skills[i]->ranks + num_ranks) <= Character::char_skills[i]->getMaxRanks(Character::getLevel())) {
-				Character::char_skills[i]->ranks += num_ranks;
-			}
-		}
-	}
+int Character::getModifier(int ability_score) {
+	return ((ability_score - 10) / 2);
 }
 
 void Character::increaseAbilityScore(std::string name) {
@@ -183,9 +80,106 @@ void Character::increaseAbilityScore(std::string name) {
 	}
 }
 
-////////////////////////////////////////////////////////////////
-//////////////			  LEVEL UP			  //////////////////
-////////////////////////////////////////////////////////////////
+// COMBAT
+
+int Character::getMaxHitPoints() {
+	return (((int)Character::getLevel() + 1) * (Character::getModifier(Character::getAbilityScore("con")) + Character::char_class->hit_die));
+}
+
+int Character::calcArmorClass() {
+	return 0;
+}
+
+int Character::calcFlatFooted() {
+	return 0;
+}
+
+int Character::getAttackBonus(std::string attack) {
+	if (attack == "melee" || attack == "mel") {
+		return Character::getModifier(Character::getAbilityScore("str")) + Character::char_class->base_attack_bonus;
+	}
+	else if (attack == "ranged" || attack == "ran") {
+		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->base_attack_bonus;
+	}
+	else {
+		return 419;
+	}
+}
+
+// MAGIC
+
+Spell Character::getSpell(std::string spell_name) {
+	Spell *p = Character::char_class->class_spells.data();
+	for (int i = 0; i < Character::char_class->class_spells.size(); i++) {
+		if (Character::char_class->class_spells[i].getValue("name") == spell_name) {
+			return Character::char_class->class_spells[i];
+		}
+		else {
+			continue;
+		}
+	}
+}
+
+// SAVING THROWS
+
+int Character::getSavingThrow(std::string s_throw) {
+	if (s_throw == "fortitude" || s_throw == "for") {
+		return Character::getModifier(Character::getAbilityScore("con") + Character::char_class->fortitude);
+	}
+	else if (s_throw == "reflex" || s_throw == "ref") {
+		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->reflex;
+	}
+	else if (s_throw == "will" || s_throw == "wil") {
+		return Character::getModifier(Character::getAbilityScore("wis")) + Character::char_class->will;
+	}
+	else {
+		return 419;
+	}
+}
+
+// LEVEL FUNCTIONS
+
+// getLevel() returns the character's level given their current xp;
+uint8_t Character::getLevel() {
+	int xp_req = 0;
+	int lvl = 0;
+	/*
+	The amount of xp needed to reach the next level is adding (current_level * 1000) to your xp. Given that a formula exists, we can write an algorithm to calculate the current level based on xp. We will have to use a for() loop. The algorithm is as follows:
+	1. calculate xp needed to achieve the current level for our iterator, i, storing in xp_req;
+	2. check whether player's xp is greater than that experience;
+	a. if the player's xp is greater than xp_req, increment i and go back to step 1;
+	b. if the player's xp is less than xp_req, lvl = i-1;
+	c. if the player's xp is /exactly equal/ to xp_req, lvl = i;
+	*/
+
+	for (int i = 1; i < 21; i++) {
+		xp_req += i * 1000;
+		if (Character::xp == xp_req) {
+			lvl = i;
+			break; // once this happens, break from the 'for' loop
+		}
+		else if (Character::xp > xp_req) {
+			continue; // go back to the top of the loop; not done checking
+		}
+		else if (Character::xp < xp_req) {
+			lvl = i - 1;
+			break; // once this happens, break from the 'for' loop -- but always check the above two first
+		}
+	}
+	return lvl;
+}
+
+void Character::modXP(std::string op, int val) {
+	if (op == "add") {
+		Character::xp += val;
+	}
+	else if (op == "sub" || op == "subtract") {
+		Character::xp -= val;
+	}
+	else {
+		return;
+	}
+}
 
 void Character::levelUp() {
 	// add skill ranks
@@ -196,6 +190,30 @@ void Character::levelUp() {
 	}
 	if (Character::getLevel() % 3 == 0) {
 		Character::add_feat_flag = true;
+	}
+}
+
+// SKILL FUNCTIONS
+
+int Character::getSkillModifier(Skill skill) {
+	return (skill.ranks + (Character::getModifier(Character::getAbilityScore(skill.ability))));
+}
+
+std::string Character::getSkillName(Skill skill) {
+	return skill.name;
+}
+
+bool Character::getSkillFlagStatus(int i) {
+	return Character::char_class->classSkillFlag[i];
+}
+
+void Character::addSkillRank(std::string skill_name, int num_ranks) {
+	for (int i = 0; i < num_skills; i++) {
+		if (Character::char_skills[i]->name == skill_name) {
+			if ((Character::char_skills[i]->ranks + num_ranks) <= Character::char_skills[i]->getMaxRanks(Character::getLevel())) {
+				Character::char_skills[i]->ranks += num_ranks;
+			}
+		}
 	}
 }
 
