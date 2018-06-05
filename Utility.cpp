@@ -43,6 +43,8 @@ void createClass(Skill skill_structure[num_skills]) {
 	ClassData new_class;
 	std::ofstream classfile;
 
+	Spell new_spell("Blindness/Deafness", "Bard, Cleric, Sorcerer/Wizard", 2, "V", "1 standard action", "Medium (100 ft + 10 ft/level)", "One living creature", "Permanent (D)", "Fortitude negates", true);
+
 	const unsigned short good_bab[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 	const unsigned short avg_bab[20] = { 0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15 };
 	const unsigned short poor_bab[20] = { 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10 };
@@ -137,8 +139,12 @@ void createClass(Skill skill_structure[num_skills]) {
 	std::cout << "Skill Coefficient? ";
 	std::cin >> c;
 	new_class.skill_coefficient = c;
+	
+	std::cout << "Caster? (1/0) ";
+	std::cin >> c;
+	new_class.is_caster = (bool)c;
 
-	std::cout << "\t\tClass Skills:" << std::endl;
+	/*std::cout << "\t\tClass Skills:" << std::endl;
 
 	for (int i = 0; i < num_skills; i++) {
 		std::cout << skill_structure[i].getSkillName() << "?";
@@ -149,6 +155,11 @@ void createClass(Skill skill_structure[num_skills]) {
 		else {
 			new_class.classSkillFlag[i] = true;
 		}
+	}*/
+
+	for (int i = 0; i < 20; i++) {
+		new_class.spells_known_by_level[i] = i;
+		new_class.spells_per_day_by_level[i] = i+1;
 	}
 
 	if (save) {
@@ -245,7 +256,8 @@ void modClass(Skill skill_structure[num_skills]) {
 			<< "[4] Skill Flags" << std::endl
 			<< "[5] Hit Die" << std::endl
 			<< "[6] Skill Coefficient" << std::endl
-			<< std::endl << "[7] Nothing, I'm done" << std::endl;
+			<< "[7] is_caster" << std::endl
+			<< std::endl << "[8] Nothing, I'm done" << std::endl;
 		std::cin >> c;
 		switch (c) {
 		case 1:
@@ -376,6 +388,11 @@ void modClass(Skill skill_structure[num_skills]) {
 			temp.skill_coefficient = s_c;
 			break;
 		case 7:
+			std::cout << "Is caster? (1/0): ";
+			std::cin >> s_c;
+			temp.is_caster = (bool)s_c;
+			break;
+		case 8:
 			n--;
 			break;
 		}
@@ -387,6 +404,115 @@ void modClass(Skill skill_structure[num_skills]) {
 	}
 	else {
 		std::cout << "cout not open \"rvcsave\" for writing in modClass() !" << std::endl;
+	}
+}
+
+void addSpells() {
+	std::ifstream classfile;
+	std::string classname;
+
+	std::ofstream rvcsave;
+
+	short vers = 0;
+	ClassData temp;
+	Spell temp_spell;
+
+	int n = 1;
+	int c;
+
+	std::string data;
+	int val;
+
+	std::cin.ignore();
+
+	std::cout << "Which class would you like to modify?" << std::endl;
+	std::getline(std::cin, classname);
+
+	classfile.open("data/" + classname + ".rvc", std::ios::in | std::ios::binary);
+	if (classfile.is_open()) {
+		loadClassData_RVC(classfile, &temp);
+		vers = getFileVersion(classfile);
+
+		classfile.close();
+
+		rvcsave.open("data/" + classname + ".rvc", std::ios::in | std::ios::binary);
+
+		if (temp.isCaster()) {
+
+			while (n > 0) {
+				std::cout << "\tUtility: Add Spell to Class File" << std::endl
+					<< "[1] Add Spell" << std::endl
+					<< "[2] Exit" << std::endl;
+				std::cin >> c;
+				if (c == 1) {
+					temp_spell.associated_class = temp.getName();
+
+					std::cout << "Spell Level: ";
+					std::cin >> val;
+
+					std::cout << "Spell Resistance? (1/0): ";
+					std::cin >> val;
+					temp_spell.spell_resistance = (bool)val;
+
+					std::cin.ignore(); // because we are using getline();
+
+					std::cout << "Spell Name: ";
+					std::getline(std::cin, data);
+					temp_spell.name = data;
+
+					std::cout << "Spell Components: ";
+					std::getline(std::cin, data);
+					temp_spell.components = data;
+
+					std::cout << "Cast Time: ";
+					std::getline(std::cin, data);
+					temp_spell.casting_time = data;
+
+					std::cout << "Range: ";
+					std::getline(std::cin, data);
+					temp_spell.range = data;
+
+					std::cout << "Target: ";
+					std::getline(std::cin, data);
+					temp_spell.target = data;
+
+					std::cout << "Duration: ";
+					std::getline(std::cin, data);
+					temp_spell.duration = data;
+
+					std::cout << "Saving Throw: ";
+					std::getline(std::cin, data);
+					temp_spell.saving_throw = data;
+
+					std::cout << "Description: ";
+					std::getline(std::cin, data);
+					temp_spell.description = data;
+
+					temp.addSpell(temp_spell);
+				}
+				else if (c == 2) {
+					n--;
+					break;
+				}
+				else {
+					std::cout << "invalid input" << std::endl;
+				}
+			}
+			// end while() loop
+			if (rvcsave.is_open()) {
+				saveToRVC(rvcsave, temp);
+				rvcsave.close();
+			}
+			else {
+				std::cout << "could not save, \"data/" << classname << ".rvc\" could not be opened!" << std::endl;
+			}
+		}
+		else if (!temp.isCaster()) {
+			std::cout << "class selected is not a casting class; change this to add spells." << std::endl;
+		}
+	}
+	else {
+		std::cout << "error reading classfile in loadClassData_RVC" << std::endl;
 	}
 }
 
@@ -408,7 +534,8 @@ void utility() {
 			<< "[2] Create Class File" << std::endl
 			<< "[3] Create Skill File" << std::endl
 			<< "[4] Modify Class File" << std::endl
-			<< "[5] Quit" << std::endl;
+			<< "[5] Add Spells to Class" << std::endl
+			<< "[6] Quit" << std::endl;
 
 		std::cin >> ch;
 
@@ -439,6 +566,9 @@ void utility() {
 			modClass(skill_structure);
 		}
 		else if (ch == 5) {
+			addSpells();
+		}
+		else if (ch == 6) {
 			i--;
 		}
 		else {

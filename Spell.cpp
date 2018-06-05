@@ -4,6 +4,10 @@ uint8_t Spell::getLevel() {
 	return spell_level;
 }
 
+bool Spell::spellResistance() {
+	return spell_resistance;
+}
+
 std::string Spell::getValue(std::string value) {
 	if (value == "name") {
 		return Spell::name;
@@ -42,6 +46,12 @@ std::string Spell::getValue(std::string value) {
 	}
 	else {
 		return "Error: invalid input in function \"Spell::getValue(std::string value)\"!";
+	}
+}
+
+void Spell::setValue(std::string name, std::string new_value) {
+	if (name == "name") {
+		Spell::name = new_value;
 	}
 }
 

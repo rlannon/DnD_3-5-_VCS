@@ -108,7 +108,7 @@ int Character::getAttackBonus(std::string attack) {
 
 // MAGIC
 
-Spell Character::getSpell(std::string spell_name) {
+Spell Character::getSpellFromClass(std::string spell_name) {
 	Spell *p = Character::char_class->class_spells.data();
 	for (int i = 0; i < Character::char_class->class_spells.size(); i++) {
 		if (Character::char_class->class_spells[i].getValue("name") == spell_name) {
@@ -117,6 +117,27 @@ Spell Character::getSpell(std::string spell_name) {
 		else {
 			continue;
 		}
+	}
+}
+
+Spell Character::getKnownSpells(int n) {
+	if (Character::char_spells.size() > 0 && n <= Character::char_spells.size() && n >= 0) {
+		return Character::char_spells[n]; // should only return if we have elements in the vector, aren't past the end, and n is not negative
+	}
+}
+
+void Character::addSpell(Spell spell) {
+	bool char_knows_spell = false;
+	for (int i = 0; i < Character::char_spells.size(); i++) {
+		if (spell.getValue("name") == Character::char_spells[i].getValue("name")) {
+			bool char_knows_spell = true; // set this to true if the spell is in the vector already
+		}
+	}
+	if (!char_knows_spell) {
+		Character::char_spells.push_back(spell); // if our bool is false, then add the spell to the vector
+	}
+	else { // if character already knows the spell -- we don't want duplicates in the vector
+		return;
 	}
 }
 

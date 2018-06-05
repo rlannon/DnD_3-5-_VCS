@@ -15,6 +15,8 @@ class CharacterClass
 {
 	std::string name;
 
+	bool is_caster;
+
 	unsigned short base_attack_bonus;
 
 	unsigned short fortitude;
@@ -37,8 +39,12 @@ class CharacterClass
 	bool classSkillFlag[45]; // flags to tell us if a skill is a class skill or not
 	// for skill flags -- look on D&D SRD 3.5e -- follows Skill class exactly
 
+	// magic
+	short spells_per_day;
+	short spells_known;
 	// our spells vector -- containing spells the class may use or learn
 	std::vector<Spell> class_spells;
+
 
 	friend class Character; // allow class "Character" to access these private members
 	friend class Skill; // allow class 'Skill' to access these private members

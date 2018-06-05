@@ -37,12 +37,14 @@ int main() {
 		2 - error in "item" class
 		3 - error in "class" class
 		4 - error in combination function/function with friend
+		5 - error in file load method
 	Second digit:
 		1 - function not executed
 		2 - error in base class
 		3 - error in child class
 		4 - error in a uint8_t function for RVC
 	Third digit:
+		8 - incorrect file header
 		9 - bad input
 
 	Additionally, some functions require a code for execution. The functions use strings, so you can use the 3-character code (the old way) OR the full name -- for example,
@@ -58,7 +60,10 @@ int main() {
 	CharacterClass char_class;
 	Skill skill_structure[num_skills];
 	Skill* skill_ptr = &skill_structure[0];
+
 	Spell new_spell("Blindness/Deafness", "Bard, Cleric, Sorcerer/Wizard", 2, "V", "1 standard action", "Medium (100 ft + 10 ft/level)", "One living creature", "Permanent (D)", "Fortitude negates", true);
+
+	Spell char_spell;
 
 	ClassData temp_data;
 
@@ -81,6 +86,7 @@ int main() {
 	classfile.open("data/Barbarian.rvc", std::ios::in | std::ios::binary);
 	if (classfile.is_open()) {
 		loadRVC(classfile, &char_class, 0);
+		std::cout << "Barbarian file is version: " << getFileVersion(classfile) << std::endl;
 		classfile.close();
 	}
 	else {
@@ -101,7 +107,8 @@ int main() {
 		std::cout << "Select an option:\n" << std::endl
 			<< "[1] Use Utility" << std::endl
 			<< "[2] Print CharSheet" << std::endl
-			<< "\n[3] Quit" << std::endl;
+			<< "[3] Load Class" << std::endl
+			<< "\n[4] Quit" << std::endl;
 		std::cin >> c;
 		switch (c) {
 		case 1:
@@ -112,6 +119,19 @@ int main() {
 			printCharSheet(character, char_class, skill_structure);
 			break;
 		case 3:
+			classfile.open("data/test.rvc", std::ios::in | std::ios::binary);
+			if (classfile.is_open()) {
+				loadRVC(classfile, &char_class, 15);
+
+				std::cout << "file version: " << getFileVersion(classfile) << std::endl;
+
+				classfile.close();
+			}
+			else {
+				err += "error reading file \"data/rogue.rvc\"!\n";
+			}
+			break;
+		case 4:
 			n--;
 			break;
 		default:

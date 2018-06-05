@@ -40,8 +40,7 @@ protected:
 	int initiative_mod;
 
 	// magic
-	short spells_per_day_by_level[10];
-	short spells_known_by_level[10];
+	std::vector<Spell> char_spells; // spells usable by the player
 
 	// level up data
 	int ranks_to_use;
@@ -70,7 +69,9 @@ public:
 	int getAttackBonus(std::string attack);
 
 	// magic
-	Spell getSpell(std::string spell_name);
+	Spell getSpellFromClass(std::string spell_name);
+	Spell getKnownSpells(int n);
+	void addSpell(Spell spell);
 
 	// saving throws
 	int getSavingThrow(std::string s_throw);

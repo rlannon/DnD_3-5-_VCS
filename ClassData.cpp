@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "ClassData.h"
 
+bool ClassData::isCaster() {
+	return ClassData::is_caster;
+}
+
 uint8_t ClassData::getBaseAttackBonus(int n) {
 	return (uint8_t)ClassData::base_attack_bonus[n];
 }
@@ -34,6 +38,26 @@ uint8_t ClassData::getClassSkillFlag(uint8_t n) {
 
 std::string ClassData::getName() {
 	return ClassData::name;
+}
+
+uint8_t ClassData::getSpellsPerDay(int i) {
+	return ClassData::spells_per_day_by_level[i];
+}
+
+uint8_t ClassData::getSpellsKnown(int i) {
+	return ClassData::spells_known_by_level[i];
+}
+
+uint8_t ClassData::getVectorSize() {
+	return (uint8_t)ClassData::class_spells.size();
+}
+
+Spell ClassData::getSpellFromVector(int i) {
+	return ClassData::class_spells[i];
+}
+
+void ClassData::addSpell(Spell spell) {
+	ClassData::class_spells.push_back(spell);
 }
 
 ClassData::ClassData(std::string name, unsigned short bab[20], unsigned short fortitude[20], unsigned short reflex[20], unsigned short will[20], unsigned short hit_die, unsigned short skill_coefficient, bool classSkillFlag[num_skills]) {
