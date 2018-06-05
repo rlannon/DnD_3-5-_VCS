@@ -38,6 +38,7 @@ class CharacterClass
 
 	bool classSkillFlag[45]; // flags to tell us if a skill is a class skill or not
 	// for skill flags -- look on D&D SRD 3.5e -- follows Skill class exactly
+	std::vector<Skill> class_skill_vector;
 
 	// magic
 	short spells_per_day;

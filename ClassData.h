@@ -25,6 +25,7 @@ class ClassData
 	unsigned short skill_coefficient;
 
 	bool classSkillFlag[num_skills];
+	std::vector<Skill> class_skill_vector;
 
 	unsigned short spells_per_day_by_level[20];
 	unsigned short spells_known_by_level[20];
@@ -46,10 +47,13 @@ public:
 
 	std::string getName();
 
+	uint8_t getVectorSize(std::string vector_name);
+
+	Skill getSkillFromVector(int i);
+
 	uint8_t getSpellsPerDay(int i);
 	uint8_t getSpellsKnown(int i);
 
-	uint8_t getVectorSize();
 	Spell getSpellFromVector(int i);
 	void addSpell(Spell spell);
 

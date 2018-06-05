@@ -40,16 +40,25 @@ std::string ClassData::getName() {
 	return ClassData::name;
 }
 
+uint8_t ClassData::getVectorSize(std::string vector_name) {
+	if (vector_name == "spell" || vector_name == "spells") {
+		return (uint8_t)ClassData::class_spells.size();
+	}
+	else if (vector_name == "skill" || vector_name == "skills") {
+		return (uint8_t)ClassData::class_skill_vector.size();
+	}
+}
+
+Skill ClassData::getSkillFromVector(int i) {
+	return ClassData::class_skill_vector[i];
+}
+
 uint8_t ClassData::getSpellsPerDay(int i) {
 	return ClassData::spells_per_day_by_level[i];
 }
 
 uint8_t ClassData::getSpellsKnown(int i) {
 	return ClassData::spells_known_by_level[i];
-}
-
-uint8_t ClassData::getVectorSize() {
-	return (uint8_t)ClassData::class_spells.size();
 }
 
 Spell ClassData::getSpellFromVector(int i) {

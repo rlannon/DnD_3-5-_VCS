@@ -144,18 +144,18 @@ void createClass(Skill skill_structure[num_skills]) {
 	std::cin >> c;
 	new_class.is_caster = (bool)c;
 
-	/*std::cout << "\t\tClass Skills:" << std::endl;
+	std::cout << "\t\tClass Skills:" << std::endl;
 
 	for (int i = 0; i < num_skills; i++) {
-		std::cout << skill_structure[i].getSkillName() << "?";
+		std::cout << skill_structure[i].getSkillName() << "? ";
 		std::cin >> c;
-		if (c == 0) {
-			new_class.classSkillFlag[i] = false;
+		if ((bool)c) {
+			new_class.class_skill_vector.push_back(skill_structure[i]);
 		}
 		else {
-			new_class.classSkillFlag[i] = true;
+			continue;
 		}
-	}*/
+	}
 
 	for (int i = 0; i < 20; i++) {
 		new_class.spells_known_by_level[i] = i;

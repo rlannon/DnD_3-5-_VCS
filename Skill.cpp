@@ -8,6 +8,10 @@ std::string Skill::getSkillName() {
 	return Skill::name;
 }
 
+std::string Skill::getSkillAbility() {
+	return Skill::ability;
+}
+
 Skill Skill::getSkill(std::string name) {
 	for (int i = 0; i < num_skills; i++) {
 		if (name == this[i].name) {

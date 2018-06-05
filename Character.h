@@ -22,6 +22,8 @@ protected:
 	Race* char_race;
 	Skill* char_skills[num_skills];
 
+	std::vector<Skill> char_skills_vector;
+
 	std::string name;
 	std::string race_name;
 	std::string char_class_name;
@@ -86,6 +88,9 @@ public:
 	std::string getSkillName(Skill skill);
 	bool getSkillFlagStatus(int i);
 	void addSkillRank(std::string skill_name, int num_ranks);
+
+	Skill getSkill(int i);
+	int getNumSkills();
 
 	// use this to create a new character on the same instance of Character
 	void createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha);

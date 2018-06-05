@@ -30,7 +30,12 @@ This library establishes RVC file format, which is to be used for storing all th
 
 	uint8_t skill_coefficient;
 
-	uint8_t classSkillFlag[num_skills];
+	vector<Skill> class_skill_vector:
+		class_skill_vector.size();
+		all class_skill_vector data:
+			name
+			ability
+			is_untrained()
 
 	uint8_t spells_per_day[20]
 	uint8_t spells_known[20]

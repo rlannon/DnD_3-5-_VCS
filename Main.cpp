@@ -119,7 +119,7 @@ int main() {
 			printCharSheet(character, char_class, skill_structure);
 			break;
 		case 3:
-			classfile.open("data/test.rvc", std::ios::in | std::ios::binary);
+			classfile.open("data/temp.rvc", std::ios::in | std::ios::binary);
 			if (classfile.is_open()) {
 				loadRVC(classfile, &char_class, 15);
 
@@ -157,10 +157,14 @@ void printCharSheet(Character character, CharacterClass char_class, Skill skill[
 		<< "Reflex: \t" << character.getSavingThrow("ref") << std::endl
 		<< "Will: \t" << character.getSavingThrow("wil") << std::endl << std::endl;
 	// this 'for' loop will only list skills the player can use
-	for (int i = 0; i < num_skills; i++) {
+	/*for (int i = 0; i < num_skills; i++) {
 		if (character.getSkillFlagStatus(i) || skill[i].isUntrained()) {
 			std::cout << character.getSkillName(skill[i]) << ": " << character.getSkillModifier(skill[i]) << std::endl;
 		}
+	}*/
+	// list class skills
+	for (int i = 0; i < character.getNumSkills(); i++) {
+		std::cout << character.getSkill(i).getSkillName() << ": " << character.getSkillModifier(character.getSkill(i)) << std::endl;
 	}
 	return;
 }

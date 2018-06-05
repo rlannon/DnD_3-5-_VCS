@@ -238,6 +238,16 @@ void Character::addSkillRank(std::string skill_name, int num_ranks) {
 	}
 }
 
+Skill Character::getSkill(int i) {
+	if (i >= 0 && i <= Character::char_class->class_skill_vector.size() && Character::char_class->class_skill_vector.size() != 0) {
+		return Character::char_class->class_skill_vector[i];
+	}
+}
+
+int Character::getNumSkills() {
+	return Character::char_class->class_skill_vector.size();
+}
+
 // use this void to set new class values without initializing a new class
 void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha) {
 	Character::char_class = char_class;
