@@ -16,7 +16,10 @@ class Skill
 	friend class Character; // allow class Character to access these private members
 	friend class CharacterClass;
 	friend class ClassData;
+
 	friend void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level);
+	friend void loadClassData_RVC(std::istream& file, ClassData* class_obj);
+
 	friend void saveSkillStructure(std::ostream& file, Skill skill_structure[num_skills]);
 	friend void loadSkillStructure(std::istream& file, Skill * skill_structure);
 	friend void createSkill();

@@ -83,10 +83,10 @@ int main() {
 	}
 
 	std::ifstream classfile;
-	classfile.open("data/Barbarian.rvc", std::ios::in | std::ios::binary);
+	classfile.open("data/test.rvc", std::ios::in | std::ios::binary);
 	if (classfile.is_open()) {
 		loadRVC(classfile, &char_class, 0);
-		std::cout << "Barbarian file is version: " << getFileVersion(classfile) << std::endl;
+		std::cout << "Test file is version: " << getFileVersion(classfile) << std::endl;
 		classfile.close();
 	}
 	else {
@@ -107,7 +107,7 @@ int main() {
 		std::cout << "Select an option:\n" << std::endl
 			<< "[1] Use Utility" << std::endl
 			<< "[2] Print CharSheet" << std::endl
-			<< "[3] Load Class" << std::endl
+			<< "[3] Load Test Class" << std::endl
 			<< "\n[4] Quit" << std::endl;
 		std::cin >> c;
 		switch (c) {
@@ -119,7 +119,7 @@ int main() {
 			printCharSheet(character, char_class, skill_structure);
 			break;
 		case 3:
-			classfile.open("data/temp.rvc", std::ios::in | std::ios::binary);
+			classfile.open("data/test.rvc", std::ios::in | std::ios::binary);
 			if (classfile.is_open()) {
 				loadRVC(classfile, &char_class, 15);
 
@@ -128,7 +128,7 @@ int main() {
 				classfile.close();
 			}
 			else {
-				err += "error reading file \"data/rogue.rvc\"!\n";
+				err += "error reading file!\n";
 			}
 			break;
 		case 4:
@@ -156,15 +156,13 @@ void printCharSheet(Character character, CharacterClass char_class, Skill skill[
 		<< "Fortitude: \t" << character.getSavingThrow("for") << std::endl
 		<< "Reflex: \t" << character.getSavingThrow("ref") << std::endl
 		<< "Will: \t" << character.getSavingThrow("wil") << std::endl << std::endl;
-	// this 'for' loop will only list skills the player can use
-	/*for (int i = 0; i < num_skills; i++) {
-		if (character.getSkillFlagStatus(i) || skill[i].isUntrained()) {
-			std::cout << character.getSkillName(skill[i]) << ": " << character.getSkillModifier(skill[i]) << std::endl;
-		}
-	}*/
 	// list class skills
+	short count = 0;
 	for (int i = 0; i < character.getNumSkills(); i++) {
 		std::cout << character.getSkill(i).getSkillName() << ": " << character.getSkillModifier(character.getSkill(i)) << std::endl;
+		count++;
 	}
+	std::cout << "num skills: " << count << std::endl;
+
 	return;
 }

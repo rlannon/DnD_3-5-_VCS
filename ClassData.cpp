@@ -32,10 +32,6 @@ uint8_t ClassData::getSkillCoefficient() {
 	return (uint8_t)ClassData::skill_coefficient;
 }
 
-uint8_t ClassData::getClassSkillFlag(uint8_t n) {
-	return (uint8_t)ClassData::classSkillFlag[n];
-}
-
 std::string ClassData::getName() {
 	return ClassData::name;
 }
@@ -81,10 +77,6 @@ ClassData::ClassData(std::string name, unsigned short bab[20], unsigned short fo
 
 	ClassData::hit_die = hit_die;
 	ClassData::skill_coefficient = skill_coefficient;
-
-	for (int i = 0; i < num_skills; i++) {
-		ClassData::classSkillFlag[i] = classSkillFlag[i];
-	}
 }
 
 ClassData::ClassData() {

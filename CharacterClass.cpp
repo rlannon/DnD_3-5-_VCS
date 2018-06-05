@@ -41,13 +41,6 @@ void CharacterClass::setName(std::string str) {
 	CharacterClass::name = str;
 }
 
-// This function sets data about all class flags for a given level; it is used in our load function
-void CharacterClass::setClassSkillFlag(bool skill[45]) {
-	for (int i = 0; i < num_skills; i++) {
-		CharacterClass::classSkillFlag[i] = skill[i];
-	}
-}
-
 
 
 /*****************************************
@@ -67,18 +60,11 @@ CharacterClass::CharacterClass(std::string name, short base_attack_bonus, unsign
 	CharacterClass::will = will;
 	CharacterClass::hit_die = hit_die;
 	CharacterClass::skill_coefficient = skill_coefficient;
-
-	for (int i = 0; i < num_skills; i++) {
-		CharacterClass::classSkillFlag[i] = 0;
-	}
 }
 
 CharacterClass::CharacterClass() {
 	CharacterClass::name = "0";
 	CharacterClass::base_attack_bonus, CharacterClass::fortitude, CharacterClass::reflex, CharacterClass::will, CharacterClass::hit_die, CharacterClass::skill_coefficient = 0;
-	for (int i = 0; i < num_skills; i++) {
-		CharacterClass::classSkillFlag[i] = 0;
-	}
 }
 
 CharacterClass::~CharacterClass()

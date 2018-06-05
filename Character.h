@@ -20,7 +20,6 @@ class Character
 protected:
 	CharacterClass* char_class;
 	Race* char_race;
-	Skill* char_skills[num_skills];
 
 	std::vector<Skill> char_skills_vector;
 
@@ -86,9 +85,7 @@ public:
 	// skill functions
 	int getSkillModifier(Skill skill);
 	std::string getSkillName(Skill skill);
-	bool getSkillFlagStatus(int i);
 	void addSkillRank(std::string skill_name, int num_ranks);
-
 	Skill getSkill(int i);
 	int getNumSkills();
 

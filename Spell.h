@@ -1,12 +1,13 @@
 #pragma once
 #include "stdafx.h"
+#include "Skill.h"
 
 class Spell
 {
 	std::string name;
 	std::string associated_class;
 	
-	uint8_t spell_level;
+	short spell_level;
 
 	std::string components;
 	std::string casting_time;
@@ -23,9 +24,9 @@ class Spell
 	friend class ClassData;
 	friend void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level);
 	friend void loadClassData_RVC(std::istream& file, ClassData* class_obj);
-	friend void addSpells();
+	friend void modClass(Skill skill_structure[num_skills]);
 public:
-	uint8_t getLevel();
+	short getLevel();
 	bool spellResistance();
 	std::string getValue(std::string value);
 

@@ -1,6 +1,6 @@
 #include "Spell.h"
 
-uint8_t Spell::getLevel() {
+short Spell::getLevel() {
 	return spell_level;
 }
 

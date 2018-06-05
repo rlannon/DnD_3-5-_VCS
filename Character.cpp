@@ -224,39 +224,24 @@ std::string Character::getSkillName(Skill skill) {
 	return skill.name;
 }
 
-bool Character::getSkillFlagStatus(int i) {
-	return Character::char_class->classSkillFlag[i];
-}
-
 void Character::addSkillRank(std::string skill_name, int num_ranks) {
-	for (int i = 0; i < num_skills; i++) {
-		if (Character::char_skills[i]->name == skill_name) {
-			if ((Character::char_skills[i]->ranks + num_ranks) <= Character::char_skills[i]->getMaxRanks(Character::getLevel())) {
-				Character::char_skills[i]->ranks += num_ranks;
-			}
-		}
-	}
+
 }
 
 Skill Character::getSkill(int i) {
-	if (i >= 0 && i <= Character::char_class->class_skill_vector.size() && Character::char_class->class_skill_vector.size() != 0) {
-		return Character::char_class->class_skill_vector[i];
+	if (i >= 0 && i <= Character::char_skills_vector.size()) {
+		return Character::char_skills_vector[i];
 	}
 }
 
 int Character::getNumSkills() {
-	return Character::char_class->class_skill_vector.size();
+	return Character::char_skills_vector.size();
 }
 
 // use this void to set new class values without initializing a new class
 void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha) {
 	Character::char_class = char_class;
 	Character::char_race = char_race;
-
-	for (int i = 0; i < num_skills; i++) {
-		char_skills[i] = char_skill_ptr + i;
-		char_skills[i]->is_class_skill = Character::char_class->classSkillFlag[i];
-	}
 
 	Character::name = name;
 	Character::char_class_name = char_class->name;
@@ -279,6 +264,31 @@ void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, 
 	Character::add_feat_flag = false;
 
 	Character::xp = 0;	// player also shouldn't start with -8k xp
+
+	Character::char_skills_vector.clear();
+
+	// we will create an iterator to count through our vectors, and use our for loop to count through the master skill list
+	std::vector<Skill>::iterator it = Character::char_class->class_skill_vector.begin();
+	for (int i = 0; i < num_skills; i++) {
+		// if the iterator has not reached the end of the vector
+		if (it != Character::char_class->class_skill_vector.end()) {
+			// if the next skill in our iterator is in our class vector, add the skill from the master list to the character vector
+			if ((char_skill_ptr + i)->name == it->name) {
+				Character::char_skills_vector.push_back(*(char_skill_ptr + i));
+				it++;
+			}
+			// if it is not, but it is untrained, add it to the character vector
+			else if (((char_skill_ptr + i)->name != it->name) && ((char_skill_ptr + i)->isUntrained())) {
+				Character::char_skills_vector.push_back(*(char_skill_ptr + i));
+			}
+		}
+		// if we have reached the end of the vector, but not the end of the master skill list, check to see if the rest are untrained
+		else {
+			if ((char_skill_ptr + i)->isUntrained()) {
+				Character::char_skills_vector.push_back(*(char_skill_ptr + i));
+			}
+		}
+	}
 }
 
 // This initializer would be best for starting a new character, or creating a test character
@@ -286,11 +296,6 @@ Character::Character(CharacterClass* char_class, Race* char_race, Skill* char_sk
 {
 	Character::char_class = char_class;
 	Character::char_race = char_race;
-
-	for (int i = 0; i < num_skills; i++) {
-		char_skills[i] = char_skill_ptr + i;
-		char_skills[i]->is_class_skill = Character::char_class->classSkillFlag[i];
-	}
 
 	Character::name = name;
 	Character::char_class_name = char_class->name;

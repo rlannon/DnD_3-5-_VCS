@@ -24,7 +24,6 @@ class ClassData
 	unsigned short hit_die;
 	unsigned short skill_coefficient;
 
-	bool classSkillFlag[num_skills];
 	std::vector<Skill> class_skill_vector;
 
 	unsigned short spells_per_day_by_level[20];
@@ -42,8 +41,6 @@ public:
 
 	uint8_t getHitDie();
 	uint8_t getSkillCoefficient();
-
-	uint8_t getClassSkillFlag(uint8_t n);
 
 	std::string getName();
 

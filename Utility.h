@@ -15,6 +15,4 @@ void createSkill();
 
 void modClass(Skill skill_structure[num_skills]);
 
-void addSpells();
-
 void utility();

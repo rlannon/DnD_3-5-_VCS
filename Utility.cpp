@@ -226,6 +226,10 @@ void modClass(Skill skill_structure[num_skills]) {
 
 	std::string skillname;
 
+	Spell temp_spell;
+	std::string data;
+	int spell_num_data;
+
 	int n = 1;
 	int c;
 
@@ -244,275 +248,300 @@ void modClass(Skill skill_structure[num_skills]) {
 	std::ofstream rvcsave;
 	rvcsave.open("data/" + classname + ".rvc", std::ios::out | std::ios::binary);
 
-	while (n > 0) {
-		int s_c;
-		short good_save[20] = { 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
-		short poor_save[20] = { 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6 };
+	if (rvcsave.is_open()) {
+		while (n > 0) {
+			int s_c;
+			short good_save[20] = { 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
+			short poor_save[20] = { 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6 };
 
-		std::cout << "What do you want to modify?" << std::endl
-			<< "[1] Name" << std::endl
-			<< "[2] BAB" << std::endl
-			<< "[3] Saving Throws" << std::endl
-			<< "[4] Skill Flags" << std::endl
-			<< "[5] Hit Die" << std::endl
-			<< "[6] Skill Coefficient" << std::endl
-			<< "[7] is_caster" << std::endl
-			<< std::endl << "[8] Nothing, I'm done" << std::endl;
-		std::cin >> c;
-		switch (c) {
-		case 1:
-			std::cout << "New name: ";
-			std::cin.ignore();
-			std::getline(std::cin, classname);
-			break;
-		case 2:
-			std::cout << "New BAB?" << std::endl
-				<< "[1] Good" << std::endl
-				<< "[2] Average" << std::endl
-				<< "[3] Poor" << std::endl;
-			std::cin >> s_c;
-			if (s_c == 1) {
-				short good_bab[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-				for (int i = 0; i < 20; i++) {
-					temp.base_attack_bonus[i] = good_bab[i];
-				}
-			}
-			else if (s_c == 2) {
-				short avg_bab[20] = { 0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15 };
-				for (int i = 0; i < 20; i++) {
-					temp.base_attack_bonus[i] = avg_bab[i];
-				}
-			}
-			else if (s_c == 3) {
-				short poor_bab[20] = { 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10 };
-				for (int i = 0; i < 20; i++) {
-					temp.base_attack_bonus[i] = poor_bab[i];
-				}
-			}
-			else {
-				std::cout << "invalid selection!" << std::endl;
-			}
-			break;
-		case 3:
-			std::cout << "New Fortitude: " << std::endl
-				<< "\t[1] Good" << std::endl
-				<< "\t[2] Poor" << std::endl;
-			std::cin >> s_c;
-			if (s_c == 1) {
-				for (int i = 0; i < 20; i++) {
-					temp.fortitude[i] = good_save[i];
-				}
-			}
-			else if (s_c == 2) {
-				for (int i = 0; i < 20; i++) {
-					temp.fortitude[i] = poor_save[i];
-				}
-			}
-			else {
-				std::cout << "invalid selection!" << std::endl;
+			std::cout << "What do you want to modify?" << std::endl
+				<< "[1] Name" << std::endl
+				<< "[2] BAB" << std::endl
+				<< "[3] Saving Throws" << std::endl
+				<< "[4] Class Skills" << std::endl
+				<< "[5] Hit Die" << std::endl
+				<< "[6] Skill Coefficient" << std::endl << std::endl
+				<< "[7] is_caster" << std::endl
+				<< "[8] Add Spells to Class" << std::endl
+				<< "[9] Remove Spells from Class" << std::endl
+				<< std::endl << "[10] Nothing, I'm done" << std::endl;
+			std::cin >> c;
+			switch (c) {
+			case 1:
+				std::cout << "New name: ";
+				std::cin.ignore();
+				std::getline(std::cin, classname);
+				temp.name = classname;
 				break;
-			}
-
-			std::cout << "New Reflex: " << std::endl
-				<< "\t[1] Good" << std::endl
-				<< "\t[2] Poor" << std::endl;
-			std::cin >> s_c;
-			if (s_c == 1) {
-				for (int i = 0; i < 20; i++) {
-					temp.reflex[i] = good_save[i];
-				}
-			}
-			else if (s_c == 2) {
-				for (int i = 0; i < 20; i++) {
-					temp.reflex[i] = poor_save[i];
-				}
-			}
-			else {
-				std::cout << "invalid selection!" << std::endl;
-				break;
-			}
-
-			std::cout << "New Will: " << std::endl
-				<< "\t[1] Good" << std::endl
-				<< "\t[2] Poor" << std::endl;
-			std::cin >> s_c;
-			if (s_c == 1) {
-				for (int i = 0; i < 20; i++) {
-					temp.will[i] = good_save[i];
-				}
-			}
-			else if (s_c == 2) {
-				for (int i = 0; i < 20; i++) {
-					temp.will[i] = poor_save[i];
-				}
-			}
-			else {
-				std::cout << "invalid selection!" << std::endl;
-				break;
-			}
-
-			break;
-		case 4:
-			std::cout << "What skill would you like to edit?" << std::endl;
-			std::cin.ignore();
-			std::getline(std::cin, skillname);
-			for (int i = 0; i < num_skills; i++) {
-				if (skill_structure[i].getSkillName() == skillname) {
-					char yn;
-					std::cout << "Is this a class skill? [y/n]" << std::endl;
-					std::cin >> yn;
-					if (yn == 'y') {
-						temp.classSkillFlag[i] = true;
+			case 2:
+				std::cout << "New BAB?" << std::endl
+					<< "[1] Good" << std::endl
+					<< "[2] Average" << std::endl
+					<< "[3] Poor" << std::endl;
+				std::cin >> s_c;
+				if (s_c == 1) {
+					short good_bab[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+					for (int i = 0; i < 20; i++) {
+						temp.base_attack_bonus[i] = good_bab[i];
 					}
-					else if (yn == 'n') {
-						temp.classSkillFlag[i] = false;
+				}
+				else if (s_c == 2) {
+					short avg_bab[20] = { 0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15 };
+					for (int i = 0; i < 20; i++) {
+						temp.base_attack_bonus[i] = avg_bab[i];
 					}
-					else {
-						std::cout << "invalid selection!" << std::endl;
+				}
+				else if (s_c == 3) {
+					short poor_bab[20] = { 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10 };
+					for (int i = 0; i < 20; i++) {
+						temp.base_attack_bonus[i] = poor_bab[i];
 					}
-					break;
 				}
 				else {
-					continue;
+					std::cout << "invalid selection!" << std::endl;
 				}
-			}
-			break;
-		case 5:
-			std::cout << "New Hit Die: d";
-			std::cin >> s_c;
-			temp.hit_die = s_c;
-			break;
-		case 6:
-			std::cout << "New Skill Coefficient: ";
-			std::cin >> s_c;
-			temp.skill_coefficient = s_c;
-			break;
-		case 7:
-			std::cout << "Is caster? (1/0): ";
-			std::cin >> s_c;
-			temp.is_caster = (bool)s_c;
-			break;
-		case 8:
-			n--;
-			break;
-		}
-	}
-	
-	if(rvcsave.is_open()) {
-		saveToRVC(rvcsave, temp);
-		rvcsave.close();
-	}
-	else {
-		std::cout << "cout not open \"rvcsave\" for writing in modClass() !" << std::endl;
-	}
-}
-
-void addSpells() {
-	std::ifstream classfile;
-	std::string classname;
-
-	std::ofstream rvcsave;
-
-	short vers = 0;
-	ClassData temp;
-	Spell temp_spell;
-
-	int n = 1;
-	int c;
-
-	std::string data;
-	int val;
-
-	std::cin.ignore();
-
-	std::cout << "Which class would you like to modify?" << std::endl;
-	std::getline(std::cin, classname);
-
-	classfile.open("data/" + classname + ".rvc", std::ios::in | std::ios::binary);
-	if (classfile.is_open()) {
-		loadClassData_RVC(classfile, &temp);
-		vers = getFileVersion(classfile);
-
-		classfile.close();
-
-		rvcsave.open("data/" + classname + ".rvc", std::ios::in | std::ios::binary);
-
-		if (temp.isCaster()) {
-
-			while (n > 0) {
-				std::cout << "\tUtility: Add Spell to Class File" << std::endl
-					<< "[1] Add Spell" << std::endl
-					<< "[2] Exit" << std::endl;
-				std::cin >> c;
-				if (c == 1) {
-					temp_spell.associated_class = temp.getName();
-
-					std::cout << "Spell Level: ";
-					std::cin >> val;
-
-					std::cout << "Spell Resistance? (1/0): ";
-					std::cin >> val;
-					temp_spell.spell_resistance = (bool)val;
-
-					std::cin.ignore(); // because we are using getline();
-
-					std::cout << "Spell Name: ";
-					std::getline(std::cin, data);
-					temp_spell.name = data;
-
-					std::cout << "Spell Components: ";
-					std::getline(std::cin, data);
-					temp_spell.components = data;
-
-					std::cout << "Cast Time: ";
-					std::getline(std::cin, data);
-					temp_spell.casting_time = data;
-
-					std::cout << "Range: ";
-					std::getline(std::cin, data);
-					temp_spell.range = data;
-
-					std::cout << "Target: ";
-					std::getline(std::cin, data);
-					temp_spell.target = data;
-
-					std::cout << "Duration: ";
-					std::getline(std::cin, data);
-					temp_spell.duration = data;
-
-					std::cout << "Saving Throw: ";
-					std::getline(std::cin, data);
-					temp_spell.saving_throw = data;
-
-					std::cout << "Description: ";
-					std::getline(std::cin, data);
-					temp_spell.description = data;
-
-					temp.addSpell(temp_spell);
+				break;
+			case 3:
+				std::cout << "New Fortitude: " << std::endl
+					<< "\t[1] Good" << std::endl
+					<< "\t[2] Poor" << std::endl;
+				std::cin >> s_c;
+				if (s_c == 1) {
+					for (int i = 0; i < 20; i++) {
+						temp.fortitude[i] = good_save[i];
+					}
 				}
-				else if (c == 2) {
-					n--;
+				else if (s_c == 2) {
+					for (int i = 0; i < 20; i++) {
+						temp.fortitude[i] = poor_save[i];
+					}
+				}
+				else {
+					std::cout << "invalid selection!" << std::endl;
 					break;
+				}
+
+				std::cout << "New Reflex: " << std::endl
+					<< "\t[1] Good" << std::endl
+					<< "\t[2] Poor" << std::endl;
+				std::cin >> s_c;
+				if (s_c == 1) {
+					for (int i = 0; i < 20; i++) {
+						temp.reflex[i] = good_save[i];
+					}
+				}
+				else if (s_c == 2) {
+					for (int i = 0; i < 20; i++) {
+						temp.reflex[i] = poor_save[i];
+					}
+				}
+				else {
+					std::cout << "invalid selection!" << std::endl;
+					break;
+				}
+
+				std::cout << "New Will: " << std::endl
+					<< "\t[1] Good" << std::endl
+					<< "\t[2] Poor" << std::endl;
+				std::cin >> s_c;
+				if (s_c == 1) {
+					for (int i = 0; i < 20; i++) {
+						temp.will[i] = good_save[i];
+					}
+				}
+				else if (s_c == 2) {
+					for (int i = 0; i < 20; i++) {
+						temp.will[i] = poor_save[i];
+					}
+				}
+				else {
+					std::cout << "invalid selection!" << std::endl;
+					break;
+				}
+
+				break;
+			case 4: // mod skills
+				std::cout << "Add or remove a skill from the class? ";
+				std::cin.ignore();
+				std::getline(std::cin, data);
+				if (data == "add") {
+					std::cout << "Skill name? ";
+					std::getline(std::cin, data);
+
+					for (int i = 0; i < num_skills; i++) {
+						bool add = true;
+						// check to see if the skill is in our skill file
+						if (skill_structure[i].getSkillName() == data) {
+							// if it is, check to see if we already have the skill
+							for (std::vector<Skill>::iterator it = temp.class_skill_vector.begin(); it != temp.class_skill_vector.end(); it++) {
+								if (skill_structure[i].getSkillName() == it->getSkillName()) {
+									add = false; // set this to false if the skill is in our vector already
+								}
+							}
+							// now check to see if we should add it
+							if (add) {
+								temp.class_skill_vector.push_back(skill_structure[i]);
+							}
+							else if (!add) {
+								std::cout << "skill already in vector" << std::endl;
+							}
+						}
+					}
+				}
+				else if (data == "remove") {
+					std::cout << "Skills in class file: " << std::endl;
+					for (int i = 0; i < temp.class_skill_vector.size(); i++) {
+						std::cout << "\t" << temp.class_skill_vector[i].getSkillName() << std::endl;
+					}
+					std::cout << "\nSkill name? (type q to quit) ";
+					std::getline(std::cin, data);
+					if (data == "q") {
+						break;
+					}
+					else {
+						int pos;
+						for (int i = 0; i < temp.class_skill_vector.size(); i++) {
+							if (temp.class_skill_vector[i].getSkillName() == data) {
+								pos = i;
+							}
+						}
+						std::cout << "removing \"" << temp.class_skill_vector[pos].getSkillName() << "\" ..." << std::endl;
+						temp.class_skill_vector.erase(temp.class_skill_vector.begin() + pos);
+					}
 				}
 				else {
 					std::cout << "invalid input" << std::endl;
 				}
-			}
-			// end while() loop
-			if (rvcsave.is_open()) {
-				saveToRVC(rvcsave, temp);
-				rvcsave.close();
-			}
-			else {
-				std::cout << "could not save, \"data/" << classname << ".rvc\" could not be opened!" << std::endl;
+				break;
+			case 5:
+				std::cout << "New Hit Die: d";
+				std::cin >> s_c;
+				temp.hit_die = s_c;
+				break;
+			case 6:
+				std::cout << "New Skill Coefficient: ";
+				std::cin >> s_c;
+				temp.skill_coefficient = s_c;
+				break;
+			case 7:
+				std::cout << "Is caster? (1/0): ";
+				std::cin >> s_c;
+				temp.is_caster = (bool)s_c;
+				break;
+			case 8:
+				if (temp.isCaster()) {
+					std::cout << "Select: " << std::endl
+						<< "[1] Add Spell" << std::endl
+						<< "[2] Done" << std::endl;
+					std::cin >> s_c;
+
+					if (s_c == 1) {
+						std::cout << "Spell name: ";
+						std::cin.ignore();
+						std::getline(std::cin, data);
+
+						temp_spell.name = data;
+
+						temp_spell.associated_class = temp.name;
+
+						std::cout << "Spell Level: ";
+						std::cin >> spell_num_data;
+						temp_spell.spell_level = spell_num_data;
+
+						std::cout << "Spell Resistance? (1/0) ";
+						std::cin >> spell_num_data;
+						temp_spell.spell_resistance = (bool)spell_num_data;
+
+						std::cout << "Components: ";
+						std::cin.ignore();
+						std::getline(std::cin, data);
+						temp_spell.components = data;
+
+						std::cout << "Cast Time: ";
+						std::getline(std::cin, data);
+						temp_spell.casting_time = data;
+
+						std::cout << "Range: ";
+						std::getline(std::cin, data);
+						temp_spell.range = data;
+
+						std::cout << "Target: ";
+						std::getline(std::cin, data);
+						temp_spell.target = data;
+
+						std::cout << "Duration: ";
+						std::getline(std::cin, data);
+						temp_spell.duration = data;
+
+						std::cout << "Saving Throw: ";
+						std::getline(std::cin, data);
+						temp_spell.saving_throw = data;
+
+						std::cout << "Description: ";
+						std::getline(std::cin, data);
+						temp_spell.saving_throw = data;
+
+						temp.class_spells.push_back(temp_spell);
+					}
+					else if (s_c == 2) {
+						break;
+					}
+					else {
+						std::cout << "invalid choice" << std::endl;
+						break;
+					}
+				}
+				else {
+					std::cout << "Selected class is not a casting class; modify this to add spells" << std::endl;
+				}
+				break;
+			case 9:
+				std::cout << "Class Spells: " << std::endl;
+				for (int i = 0; i < temp.class_spells.size(); i++) { // list spells in vector
+					std::cout << "\t" << temp.class_spells[i].name << std::endl;
+				}
+				std::cout << "Type a spell name to remove it (or type q to cancel) ... ";
+				std::cin.ignore();
+				std::getline(std::cin, data);
+
+				if (data == "q") {
+					break;
+				}
+				else {
+					int pos;
+					for (int i = 0; i < temp.class_spells.size(); i++) {
+						if (temp.class_spells[i].name == data) {
+							pos = i;
+							break;
+						}
+					}
+
+					std::cout << "are you sure you want to remove \"" << temp.class_spells[pos].name << "\" ? (yes/no) ";
+					std::getline(std::cin, data);
+
+					if (data == "yes") {
+						temp.class_spells.erase(temp.class_spells.begin() + pos);
+					}
+					else if (data == "no") {
+						break;
+					}
+					else {
+						std::cout << "invalid input. exiting..." << std::endl;
+						break;
+					}
+				}
+				break;
+			case 10:
+				n--;
+				break;
 			}
 		}
-		else if (!temp.isCaster()) {
-			std::cout << "class selected is not a casting class; change this to add spells." << std::endl;
-		}
-	}
-	else {
-		std::cout << "error reading classfile in loadClassData_RVC" << std::endl;
+
+	saveToRVC(rvcsave, temp);
+	rvcsave.close();
+
+	} else {
+		std::cout << "cout not open \"rvcsave\" for writing in modClass() !" << std::endl;
 	}
 }
 
@@ -534,8 +563,7 @@ void utility() {
 			<< "[2] Create Class File" << std::endl
 			<< "[3] Create Skill File" << std::endl
 			<< "[4] Modify Class File" << std::endl
-			<< "[5] Add Spells to Class" << std::endl
-			<< "[6] Quit" << std::endl;
+			<< "[5] Quit" << std::endl;
 
 		std::cin >> ch;
 
@@ -566,9 +594,6 @@ void utility() {
 			modClass(skill_structure);
 		}
 		else if (ch == 5) {
-			addSpells();
-		}
-		else if (ch == 6) {
 			i--;
 		}
 		else {

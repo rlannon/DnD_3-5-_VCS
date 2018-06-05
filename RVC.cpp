@@ -123,43 +123,7 @@ void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level) {
 
 		*/
 
-		if (vers == 1) {
-			// if we are reading a version 1 file, use the following code
-
-			file.seekg(+level, std::ios::cur);	// seek to current level bab data
-			class_obj->setBaseAttackBonus(readU8(file));
-			file.seekg(+(19 - level), std::ios::cur); // seek across the remaining bytes for bab data
-
-			// do the same for for, ref, and wil
-			file.seekg(+level, std::ios::cur);
-			class_obj->setSavingThrow("for", readU8(file));
-			file.seekg(+(19 - level), std::ios::cur);
-
-			file.seekg(+level, std::ios::cur);
-			class_obj->setSavingThrow("ref", readU8(file));
-			file.seekg(+(19 - level), std::ios::cur);
-
-			file.seekg(+level, std::ios::cur);
-			class_obj->setSavingThrow("wil", readU8(file));
-			file.seekg(+(19 - level), std::ios::cur);
-
-			// read hd
-			class_obj->setHitDie(readU8(file));
-
-			// read skill coefficient
-			class_obj->setSkillCoefficient(readU8(file));
-
-			// read class skill flags
-			//This procedure is pretty simple; we get the U8 value from the file, cast it to bool, and store the values in our flagBuffer array. We then copy our flagBuffer array, containing the class skill flags, and copy it to our character class instance.
-			for (int i = 0; i < num_skills; i++) {
-				flagBuffer[i] = (bool*)readU8(file);
-			}
-			class_obj->setClassSkillFlag(flagBuffer);
-
-			// read name
-			class_obj->setName(readString(file));
-		}
-		else if (vers == 2) {
+		if (vers == 2) {
 			int vector_size;
 			Spell temp_spell;
 			Skill temp_skill;
@@ -266,35 +230,10 @@ void loadClassData_RVC(std::istream& file, ClassData* class_obj) {
 	if (header[0, 1, 2, 3] == *"R", "V", "C", "f") {
 		vers = readU8(file);
 
-		if (vers == 1) {
-			// version 1 rvc file
+		if (vers == 2) {
+			Skill temp_skill;
+			int vector_size;
 
-			// get base attack
-			for (int i = 0; i < 20; i++) {
-				class_obj->base_attack_bonus[i] = readU8(file);
-			}
-			// for, ref, will
-			for (int i = 0; i < 20; i++) {
-				class_obj->fortitude[i] = readU8(file);
-			}
-			for (int i = 0; i < 20; i++) {
-				class_obj->reflex[i] = readU8(file);
-			}
-			for (int i = 0; i < 20; i++) {
-				class_obj->will[i] = readU8(file);
-			}
-			// hd
-			class_obj->hit_die = readU8(file);
-			// skill coefficient
-			class_obj->skill_coefficient = readU8(file);
-			// skill flags
-			for (int i = 0; i < num_skills; i++) {
-				class_obj->classSkillFlag[i] = (bool)readU8(file);
-			}
-			// name
-			class_obj->name = readString(file);
-		}
-		else if (vers == 2) {
 			// version 2 rvc file
 			// check for caster status
 			bool is_caster = (bool)readU8(file);
@@ -304,6 +243,7 @@ void loadClassData_RVC(std::istream& file, ClassData* class_obj) {
 			for (int i = 0; i < 20; i++) {
 				class_obj->base_attack_bonus[i] = readU8(file);
 			}
+
 			// for, ref, will
 			for (int i = 0; i < 20; i++) {
 				class_obj->fortitude[i] = readU8(file);
@@ -314,26 +254,36 @@ void loadClassData_RVC(std::istream& file, ClassData* class_obj) {
 			for (int i = 0; i < 20; i++) {
 				class_obj->will[i] = readU8(file);
 			}
+
 			// hd
 			class_obj->hit_die = readU8(file);
 			// skill coefficient
 			class_obj->skill_coefficient = readU8(file);
-			// skill flags
-			for (int i = 0; i < num_skills; i++) {
-				class_obj->classSkillFlag[i] = (bool)readU8(file);
+		
+			// get vector size (num skills saved) and clear the vector
+			vector_size = readU8(file);
+			class_obj->class_skill_vector.clear();
+
+			for (int i = 0; i < vector_size; i++) {
+				// read from file, storing data in a temp class instance
+				temp_skill.name = readString(file);
+				temp_skill.ability = readString(file);
+				temp_skill.untrained = (bool)readU8(file);
+
+				// push class instance to end of vector
+				class_obj->class_skill_vector.push_back(temp_skill);
 			}
 
 			if (is_caster) {
 				Spell temp;
+				
 				for (int i = 0; i < 20; i++) {
 					class_obj->spells_per_day_by_level[i] = readU8(file);
 				}
 				for (int i = 0; i < 20; i++) {
 					class_obj->spells_known_by_level[i] = readU8(file);
 				}
-				int vector_size = readU8(file);
-
-				std::cout << vector_size << std::endl;
+				vector_size = readU8(file);
 
 				class_obj->class_spells.clear();
 
