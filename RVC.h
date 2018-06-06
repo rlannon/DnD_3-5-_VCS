@@ -10,7 +10,7 @@ RVC - Rijksystem Virtual Class
 
 Version 2
 
-Version 1 of this file format did not include the spell vector data. Reading from a version 1 file will ignore the spell vector.
+Version 1 did not include the spell vector, but the code for use of version 1 has been removed.
 
 This library establishes RVC file format, which is to be used for storing all the RKS character class data. The header lays out the file format, and the C++ file implements it. Note this is to be used in conjunction with a CharacterClass object from this program. The file is format contains the following types, and is structured as follows:
 

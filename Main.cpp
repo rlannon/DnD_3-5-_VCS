@@ -7,6 +7,9 @@
 #include "ClassData.h"
 #include "Skill.h"
 #include "Spell.h"
+#include "Item.h"
+#include "Weapon.h"
+#include "Armor.h"
 
 // File Formats
 #include "FundamentalDataTypes.h"

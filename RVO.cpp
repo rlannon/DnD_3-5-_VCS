@@ -183,12 +183,208 @@ void loadToVector_RVO(std::istream& file, std::vector<Armor>* armor) {
 }
 
 // load individual object from RVO
-void loadItem_RVO(std::istream& file, Item* item) {
+void loadItem_RVO(std::istream& file, Item* item, int item_id) {
+	short type;
+	int id = 0;
+	if (readHeader(file)) {
+		// check to make sure we are using the correct type
+		type = readU8(file);
 
+		if (type == obj_is_item) {
+			int num_items = (int)readU16(file);
+			
+			for (int i = 0; i < num_items; i++) {
+				// the first data is our item id
+				id = readU16(file);
+				if (item_id == id) {
+					// if we have the right item id, get the object
+					item->id = id;
+					item->name = readString(file);
+					item->weight = convertU32(readU32(file));
+
+					for (int i = 0; i < 4; i++) {
+						item->cost[i] = readU16(file);
+					}
+
+					item->notes = readString(file);
+
+					break; // we are done, no need to finish the loop
+				}
+				else {
+					if (i != (num_items - 1)) { // make sure we don't read past the end of the file
+						/*
+
+						Because we skip ahead to the next item before we increment, we cannot skip ahead once we are on the last item -- so DO NOT skip ahead if we increment up to the last item. This allows us to read the last item in the vector, but it won't check once it reaches it.
+						Say num_items = 3:
+							i = 0
+							Read first item
+							Skip ahead From item 0 to item 1
+
+							i = 1
+							Read second item
+							Skip ahead from item 1 to item 2
+
+							i = 2
+							Read third item
+							Now, i = num_items - 1 (3 - 1 = 2), so do not continue to read, and break instead; if we try to read ahead, we will go past the end of the file which is a very bad thing, and we won't catch that we have read too far until we get back to the top of the loop, by which point we have already tried to access items past the end of the file.
+
+						This is why we compare against num_items - 1, not against num_items
+
+						*/
+						// read ahead to the next object
+						int str_len = readU16(file); // get the "name" string length
+						file.seekg(str_len, std::ios::cur); // skip ahead past the string
+
+						file.seekg(4, std::ios::cur); // skip ahead 4 bytes past (U32)weight
+						file.seekg(8, std::ios::cur); // skip ahead 8 bytes past (U16)cost (4)
+
+						str_len = readU16(file); // get the "notes" string length
+						file.seekg(str_len, std::ios::cur); // skip ahead past the string
+						// now, we should be at the next id field
+					}
+					else if (i == (num_items - 1)) {
+						break;
+					}
+				}
+			}
+		}
+	}
+	else { // incorrect file format
+		return;
+	}
 }
-void loadItem_RVO(std::istream& file, Weapon* weapon) {
+void loadItem_RVO(std::istream& file, Weapon* weapon, int item_id) {
+	short type;
+	int id = 0;
+	if (readHeader(file)) {
+		type = readU8(file);
 
+		if (type == obj_is_weapon) {
+			// get the number of items in the file
+			int num_items = readU16(file);
+
+			for (int i = 0; i < num_items; i++) {
+				// the first data is our item id
+				id = readU16(file);
+				if (item_id == id) {
+					// if we have the right item id, get the object
+
+					// first, get Item data
+					weapon->id = id;
+					weapon->name = readString(file);
+					weapon->weight = convertU32(readU32(file));
+
+					for (int i = 0; i < 4; i++) {
+						weapon->cost[i] = readU16(file);
+					}
+
+					weapon->notes = readString(file);
+
+					// then, get Weapon-specific data
+
+					weapon->damage_s = readU8(file);
+					weapon->damage_m = readU8(file);
+					weapon->critical = readU8(file);
+					weapon->range = readU8(file);
+
+					weapon->type = readString(file);
+
+					break; // we are done, no need to finish the loop
+				}
+				else {
+					if (i != (num_items - 1)) { // make sure we don't read past the end of the file
+												// see loadItem_RVO(item) for the explanation
+						// read Item data
+						int str_len = readU16(file); // get the "name" string length
+						file.seekg(str_len, std::ios::cur); // skip ahead past the string
+
+						file.seekg(4, std::ios::cur); // skip ahead 4 bytes past (U32)weight
+						file.seekg(8, std::ios::cur); // skip ahead 8 bytes past (U16)cost (4)
+
+						str_len = readU16(file); // get the "notes" string length
+						file.seekg(str_len, std::ios::cur); // skip ahead past the string
+
+						// skip past weapon data
+
+						file.seekg(4, std::ios::cur); // skip past weapon numerical data
+						// skip past weapon type
+						str_len = readU16(file);
+						file.seekg(str_len, std::ios::cur);
+					}
+					else if (i == (num_items - 1)) {
+						break;
+					}
+				}
+			}
+		}
+		else { // object is wrong type
+			return;
+		}
+	}
+	else { // incorrect file format
+		return;
+	}
 }
-void loadItem_RVO(std::istream& file, Armor* armor) {
+void loadItem_RVO(std::istream& file, Armor* armor, int item_id) {
+	short type;
+	int id = 0;
+	if (readHeader(file)) {
+		// check to make sure we are using the correct type
+		type = readU8(file);
 
+		if (type == obj_is_armor) {
+			int num_items = (int)readU16(file);
+
+			for (int i = 0; i < num_items; i++) {
+				// the first data is our item id
+				id = readU16(file);
+				if (item_id == id) {
+					// if we have the right item id, get the object
+					armor->id = id;
+					armor->name = readString(file);
+					armor->weight = convertU32(readU32(file));
+
+					for (int i = 0; i < 4; i++) {
+						armor->cost[i] = readU16(file);
+					}
+
+					armor->notes = readString(file);
+
+					// armor-specific data
+					armor->ac_bonus = readU8(file);
+					armor->max_dex = readU8(file);
+					armor->armor_check_penalty = readU8(file);
+
+					armor->spell_fail_chance = convertU8(readU8(file));
+
+					armor->speed_30 = readU8(file);
+					armor->speed_20 = readU8(file);
+
+					break; // we are done, no need to finish the loop
+				}
+				else {
+					if (i != (num_items - 1)) { // make sure we don't read past the end of the file
+												// See loadItem_RVO(item) for explanation
+						int str_len = readU16(file); // get the "name" string length
+						file.seekg(str_len, std::ios::cur); // skip ahead past the string
+
+						file.seekg(4, std::ios::cur); // skip ahead 4 bytes past (U32)weight
+						file.seekg(8, std::ios::cur); // skip ahead 8 bytes past (U16)cost (4)
+
+						str_len = readU16(file); // get the "notes" string length
+						file.seekg(str_len, std::ios::cur); // skip ahead past the string
+
+						// skip past rest of armor-specific data
+						file.seekg(6, std::ios::cur);
+					}
+					else if (i == (num_items - 1)) {
+						break;
+					}
+				}
+			}
+		}
+	}
+	else { // incorrect file format
+		return;
+	}
 }

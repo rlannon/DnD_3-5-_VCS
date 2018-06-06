@@ -238,6 +238,21 @@ int Character::getNumSkills() {
 	return Character::char_skills_vector.size();
 }
 
+void Character::addItem(Item item)
+{
+	Character::char_items.push_back(item);
+}
+
+void Character::addItem(Weapon weapon)
+{
+	Character::char_wpns.push_back(weapon);
+}
+
+void Character::addItem(Armor armor)
+{
+	Character::char_armor.push_back(armor);
+}
+
 // use this void to set new class values without initializing a new class
 void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha) {
 	Character::char_class = char_class;
@@ -262,6 +277,11 @@ void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, 
 	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence)) * 4; // level 1 ranks
 	Character::ability_score_increase_flag = false;
 	Character::add_feat_flag = false;
+
+	// clear inventory
+	Character::char_items.clear();
+	Character::char_wpns.clear();
+	Character::char_armor.clear();
 
 	Character::xp = 0;	// player also shouldn't start with -8k xp
 

@@ -77,6 +77,6 @@ void loadToVector_RVO(std::istream& file, std::vector<Weapon>* weapon);
 void loadToVector_RVO(std::istream& file, std::vector<Armor>* armor);
 
 // load individual object from RVO
-void loadItem_RVO(std::istream& file, Item* item);
-void loadItem_RVO(std::istream& file, Weapon* weapon);
-void loadItem_RVO(std::istream& file, Armor* armor);
+void loadItem_RVO(std::istream& file, Item* item, int item_id);
+void loadItem_RVO(std::istream& file, Weapon* weapon, int item_id);
+void loadItem_RVO(std::istream& file, Armor* armor, int item_id);

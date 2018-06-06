@@ -1,5 +1,6 @@
 #include "FundamentalDataTypes.h"
 #include "VCS.h"
+#include "RVO.h"
 
 void saveToVCS(std::ostream& file, Character character) {
 	// write file header
@@ -27,12 +28,16 @@ void saveToVCS(std::ostream& file, Character character) {
 	writeU16(file, (uint16_t)character.money[1]); // sp
 	writeU16(file, (uint16_t)character.money[2]); // gp
 	writeU16(file, (uint16_t)character.money[3]); // pp
+
+	// NEW IN VERSION 2
+
+	// write inventory vectors as RVO format here
 }
 
 void loadVCS(std::istream& file, Character* character) {
 	char header[7];
 	char * buffer = &header[0];
-	uint8_t vers;
+	short vers;
 
 	file.read(buffer, 7);
 
@@ -40,31 +45,39 @@ void loadVCS(std::istream& file, Character* character) {
 	if (header[0, 1, 2, 3, 4, 5, 6] == *"v", "3", "5", "V", "C", "S", "f") {
 		// load version
 		vers = readU8(file);
-		// add version check here later
 
-		// read strings
-		character->name = readString(file);
-		character->race_name = readString(file);
-		character->char_class_name = readString(file);
+		if (vers == 1) {
 
-		// read xp
-		character->xp = readU16(file);
+			// read strings
+			character->name = readString(file);
+			character->race_name = readString(file);
+			character->char_class_name = readString(file);
 
-		// read abilities
-		character->strength = readU8(file);
-		character->dexterity= readU8(file);
-		character->constitution = readU8(file);
-		character->intelligence = readU8(file);
-		character->wisdom = readU8(file);
-		character->charisma = readU8(file);
+			// read xp
+			character->xp = readU16(file);
 
-		character->initiative_mod = readU8(file);
+			// read abilities
+			character->strength = readU8(file);
+			character->dexterity = readU8(file);
+			character->constitution = readU8(file);
+			character->intelligence = readU8(file);
+			character->wisdom = readU8(file);
+			character->charisma = readU8(file);
 
-		// read money
-		character->money[0] = readU16(file); // cp
-		character->money[1] = readU16(file); // sp
-		character->money[2] = readU16(file); // gp
-		character->money[3] = readU16(file); // pp
+			character->initiative_mod = readU8(file);
+
+			// read money
+			character->money[0] = readU16(file); // cp
+			character->money[1] = readU16(file); // sp
+			character->money[2] = readU16(file); // gp
+			character->money[3] = readU16(file); // pp
+		}
+		else if (vers == 2) {
+			// use this to load inventory vectors from rvo
+		}
+		else { // invalid version
+			return;
+		}
 	}
 	else {
 		return;

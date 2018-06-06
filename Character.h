@@ -6,6 +6,9 @@
 #include "Skill.h"
 #include "CharacterClass.h"
 #include "Spell.h"
+#include "Item.h"
+#include "Weapon.h"
+#include "Armor.h"
 
 /*
 
@@ -48,7 +51,10 @@ protected:
 	bool ability_score_increase_flag;
 	bool add_feat_flag;
 
-	// misc
+	// inventory
+	std::vector<Item> char_items;
+	std::vector<Weapon> char_wpns;
+	std::vector<Armor> char_armor;
 	int money[4]; // money[0] = cp, money[1] = sp, money[2] = gp, money[3] = pp
 public:
 	std::string getName();
@@ -88,6 +94,11 @@ public:
 	void addSkillRank(std::string skill_name, int num_ranks);
 	Skill getSkill(int i);
 	int getNumSkills();
+
+	// inventory functions
+	void addItem(Item item);
+	void addItem(Weapon weapon);
+	void addItem(Armor armor);
 
 	// use this to create a new character on the same instance of Character
 	void createNewCharacter(CharacterClass* char_class, Race* char_race, Skill* char_skill_ptr, std::string name, int str, int dex, int con, int intel, int wis, int cha);
