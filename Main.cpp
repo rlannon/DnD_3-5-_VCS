@@ -11,6 +11,7 @@
 // File Formats
 #include "FundamentalDataTypes.h"
 #include "VCS.h"
+#include "RVO.h"
 #include "RVC.h"
 #include "RVR.h"
 #include "SkillsFormat.h"

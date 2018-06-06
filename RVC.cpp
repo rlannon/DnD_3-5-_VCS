@@ -102,8 +102,6 @@ void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level) {
 	char * buffer = &header[0];
 	short vers = 0;
 
-	bool flagBuffer[num_skills];
-
 	file.read(buffer, 4);
 
 	// first, check our header data to make sure it is the correct file format. If so, continue on
