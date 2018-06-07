@@ -34,7 +34,8 @@ The VCS format is at the center of this program; it is what we use to save insta
 
 New in version 2:
 The character inventory vectors are saved in the character file.
-	U16 num_item
+	U16 num_item (item.size + wpn.size + armor.size)
+
 */
 
 const short vcs_version = 2;

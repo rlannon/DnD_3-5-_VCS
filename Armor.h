@@ -32,6 +32,9 @@ class Armor :
 	friend void saveToRVO(std::ostream& file, std::vector<Armor> armor);
 	friend void loadToVector_RVO(std::istream& file, std::vector<Armor>* armor);
 	friend void loadItem_RVO(std::istream& file, Armor* armor, int item_id);
+
+	friend void saveToRVO(std::ostream& file, std::vector<Item> item, std::vector<Weapon> wpn, std::vector<Armor> armor);
+	friend void loadToVector_RVO(std::istream& file, std::vector<Item>* item, std::vector<Weapon>* weapon, std::vector<Armor>* armor);
 public:
 	
 

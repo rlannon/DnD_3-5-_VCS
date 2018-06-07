@@ -32,6 +32,15 @@ void saveToVCS(std::ostream& file, Character character) {
 	// NEW IN VERSION 2
 
 	// write inventory vectors as RVO format here
+	std::ofstream inventory_file;
+	inventory_file.open(character.getClass() + ".inventory.rvo", std::ios::out | std::ios::binary);
+	if (inventory_file.is_open()) {
+		saveToRVO(inventory_file, character.char_items, character.char_wpns, character.char_armor);
+		inventory_file.close();
+	}
+	else {
+		return; // error opening file
+	}
 }
 
 void loadVCS(std::istream& file, Character* character) {
@@ -46,37 +55,43 @@ void loadVCS(std::istream& file, Character* character) {
 		// load version
 		vers = readU8(file);
 
+		// read strings
+		character->name = readString(file);
+		character->race_name = readString(file);
+		character->char_class_name = readString(file);
+
+		// read xp
+		character->xp = readU16(file);
+
+		// read abilities
+		character->strength = readU8(file);
+		character->dexterity = readU8(file);
+		character->constitution = readU8(file);
+		character->intelligence = readU8(file);
+		character->wisdom = readU8(file);
+		character->charisma = readU8(file);
+
+		character->initiative_mod = readU8(file);
+
+		// read money
+		character->money[0] = readU16(file); // cp
+		character->money[1] = readU16(file); // sp
+		character->money[2] = readU16(file); // gp
+		character->money[3] = readU16(file); // pp
+
 		if (vers == 1) {
-
-			// read strings
-			character->name = readString(file);
-			character->race_name = readString(file);
-			character->char_class_name = readString(file);
-
-			// read xp
-			character->xp = readU16(file);
-
-			// read abilities
-			character->strength = readU8(file);
-			character->dexterity = readU8(file);
-			character->constitution = readU8(file);
-			character->intelligence = readU8(file);
-			character->wisdom = readU8(file);
-			character->charisma = readU8(file);
-
-			character->initiative_mod = readU8(file);
-
-			// read money
-			character->money[0] = readU16(file); // cp
-			character->money[1] = readU16(file); // sp
-			character->money[2] = readU16(file); // gp
-			character->money[3] = readU16(file); // pp
+			return; // version one files do not save or load inventory data
 		}
 		else if (vers == 2) {
-			// use this to load inventory vectors from rvo
-		}
-		else { // invalid version
-			return;
+			std::ifstream inventory_file;
+			inventory_file.open(character->char_class_name + ".inventory.rvo", std::ios::in | std::ios::binary);
+			if (inventory_file.is_open()) {
+				loadToVector_RVO(inventory_file, &character->char_items, &character->char_wpns, &character->char_armor);
+				inventory_file.close();
+			}
+			else {
+				return; // error opening file
+			}
 		}
 	}
 	else {

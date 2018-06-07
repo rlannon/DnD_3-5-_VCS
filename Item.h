@@ -8,7 +8,7 @@ The id code for "Item" is 1xxxx (we have 16 bits so we can go up to 65535)
 
 */
 
-int getItemID(std::vector<Item> item_vector, std::string name);
+//int getItemID(std::vector<Item> item_vector, std::string name);
 
 class Item
 {
@@ -23,6 +23,11 @@ protected:
 	friend void readItemData(std::istream& file, Item* item);
 
 	friend void loadItem_RVO(std::istream& file, Item* item, int item_id);
+
+	friend class Weapon; // need these for the loadToVector_RVO(file, item, weapon armor) -- otherwise the code breaks
+	friend class Armor;
+	friend void saveToRVO(std::ostream& file, std::vector<Item> item, std::vector<Weapon> wpn, std::vector<Armor> armor);
+	friend void loadToVector_RVO(std::istream& file, std::vector<Item>* item, std::vector<Weapon>* weapon, std::vector<Armor>* armor);
 public:
 	std::string getName();
 	int getId();

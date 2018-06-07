@@ -104,6 +104,56 @@ void saveToRVO(std::ostream& file, std::vector<Armor> armor) {
 	}
 }
 
+/*******************************
+
+GENERAL SAVE FUNCTION
+FOR INVENTORY
+
+*******************************/
+
+void saveToRVO(std::ostream& file, std::vector<Item> item, std::vector<Weapon> wpn, std::vector<Armor> armor)
+{
+	writeHeader(file);
+
+	writeU8(file, multiple_obj_types);
+
+	int size = item.size() + wpn.size() + armor.size();
+	writeU16(file, size);
+
+	// save in all the Item objects, then the Weapon objects, then the Armor objects
+
+	for (std::vector<Item>::iterator it = item.begin(); it != item.end(); it++) {
+		writeU8(file, obj_is_item); // so when we load, we know the object is an item
+		writeItemData(file, *it); // write item data
+	}
+
+	for (std::vector<Weapon>::iterator it = wpn.begin(); it != wpn.end(); it++) {
+		writeU8(file, obj_is_weapon);
+		writeItemData(file, *it);
+
+		writeU8(file, it->damage_s);
+		writeU8(file, it->damage_m);
+		writeU8(file, it->critical);
+		writeU8(file, it->range);
+
+		writeString(file, it->type);
+	}
+
+	for (std::vector<Armor>::iterator it = armor.begin(); it != armor.end(); it++) {
+		writeU8(file, obj_is_armor);
+		writeItemData(file, *it);
+
+		writeU8(file, it->ac_bonus);
+		writeU8(file, it->max_dex);
+		writeU8(file, it->armor_check_penalty);
+
+		writeU8(file, convertFloat_U8(it->spell_fail_chance));
+
+		writeU8(file, it->speed_30);
+		writeU8(file, it->speed_20);
+	}
+}
+
 // load from RVO format to vector
 void loadToVector_RVO(std::istream& file, std::vector<Item>* item) {
 	short type;
@@ -179,6 +229,67 @@ void loadToVector_RVO(std::istream& file, std::vector<Armor>* armor) {
 	}
 	else { // incorrect file format
 		return;
+	}
+}
+
+void loadToVector_RVO(std::istream & file, std::vector<Item>* item, std::vector<Weapon>* weapon, std::vector<Armor>* armor)
+{
+	short type;
+	if (readHeader(file)) {
+		type = readU8(file);
+		if (type == multiple_obj_types) {
+			Item i_temp;
+			Weapon w_temp;
+			Armor a_temp;
+
+			int num_items = readU16(file);
+
+			for (int i = 0; i < num_items; i++) {
+				// first, read the object type
+				type = readU8(file);
+				if (type == obj_is_item) { // if the next object is an item
+					readItemData(file, &i_temp);
+					item->push_back(i_temp);
+				}
+				else if (type == obj_is_weapon) { // if the next object is a weapon
+					readItemData(file, &w_temp);
+
+					w_temp.damage_s = readU8(file);
+					w_temp.damage_m = readU8(file);
+					w_temp.critical = readU8(file);
+					w_temp.range = readU8(file);
+
+					w_temp.type = readString(file);
+
+					// finally, push to our vector
+					weapon->push_back(w_temp);
+				}
+				else if (type == obj_is_armor) { // if the object type is armor
+					readItemData(file, &a_temp);
+
+					a_temp.ac_bonus = readU8(file);
+					a_temp.max_dex = readU8(file);
+					a_temp.armor_check_penalty = readU8(file);
+
+					a_temp.spell_fail_chance = convertU8(readU8(file));
+
+					a_temp.speed_30 = readU8(file);
+					a_temp.speed_20 = readU8(file);
+
+					// finally, push to vector
+					armor->push_back(a_temp);
+				}
+				else {
+					return; // if we ever execute this, the file has encountered a fatal error and must close
+				}
+			}
+		}
+		else {
+			return; // type error -- not multiple object types
+		}
+	}
+	else {
+		return; // incorrect file format
 	}
 }
 

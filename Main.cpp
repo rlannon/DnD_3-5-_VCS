@@ -26,7 +26,6 @@
 void printCharSheet(Character character, CharacterClass char_class, Skill skill[num_skills]);
 
 int main() {
-
 	/*
 
 	Notes:
@@ -106,6 +105,39 @@ int main() {
 	else {
 		err += "error reading file \"data/skills.skills\"!\n";
 	}
+
+	/*int cost[4] = { 1, 2, 3, 4 };
+	Weapon wpn("test", 1, 2, cost, "none", 1, 2, 3, 4, "some type");
+	Armor armor("sample", 3, 4, cost, "something", 5, 6, 7, .8, 30, 20);
+	Item item("an item", 5, 6, cost, "notes!!");
+
+	character.createNewCharacter(&char_class, &char_race, skill_ptr, "Stout", 10, 11, 12, 13, 14, 15);
+
+	character.addItem(wpn);
+	character.addItem(armor);
+	character.addItem(item);
+
+	std::ofstream charfile;
+	charfile.open("sample.vcs", std::ios::out | std::ios::binary);
+	if (charfile.is_open()) {
+		saveToVCS(charfile, character);
+		charfile.close();
+	}
+	else {
+		std::cout << "vcs err" << std::endl;
+	}
+
+	Character test_char;
+
+	std::ifstream samplefile;
+	samplefile.open("sample.vcs", std::ios::out | std::ios::binary);
+	if (samplefile.is_open()) {
+		loadVCS(samplefile, &test_char);
+		samplefile.close();
+	}
+	else {
+		std::cout << "vcs load err" << std::endl;
+	}*/
 
 	while (n > 0) {
 		std::cout << "Select an option:\n" << std::endl
