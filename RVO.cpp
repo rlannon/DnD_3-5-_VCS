@@ -61,7 +61,7 @@ void saveToRVO(std::ostream& file, std::vector<Item> item) {
 	writeHeader(file);
 
 	writeU8(file, obj_is_item);
-	writeU16(file, item.size());
+	writeU16(file, item.size()); // "possible loss of data" -- we should be ok because we shouldn't have more than 65,535 items; this follows for the other inventory object types
 
 	for (std::vector<Item>::iterator it = item.begin(); it != item.end(); it++) {
 		writeItemData(file, *it);
@@ -76,7 +76,7 @@ void saveToRVO(std::ostream& file, std::vector<Weapon> weapon) {
 	for (std::vector<Weapon>::iterator it = weapon.begin(); it != weapon.end(); it++) {
 		writeItemData(file, *it);
 		// weapon-specific data
-		writeU8(file, it->damage_s);
+		writeU8(file, it->damage_s); // note that there is possible loss of data, though we should be ok because values should be between 0 and 255 anyway
 		writeU8(file, it->damage_m);
 		writeU8(file, it->critical);
 		writeU8(file, it->range);

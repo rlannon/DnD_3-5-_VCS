@@ -24,6 +24,7 @@ uint32_t readU32(std::istream& file);
 void writeU32(std::ostream& file, uint32_t val);
 
 // store float as uint8_t, uint16_t, or uint32_t
+// This *could* result in a loss of data, but we shouldn't have problems if we use values that are expected in the system and use the functions correctly
 uint8_t convertFloat_U8(float n); // converting float to u8 should only be used for percentages or numbers smaller than 2.55
 uint16_t convertFloat_U16(float n);
 uint32_t convertFloat_U32(float n); // unlike u8 and u16 conversion, the u32 has 4 decimal places precision instead of 2

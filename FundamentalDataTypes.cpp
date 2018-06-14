@@ -79,17 +79,17 @@ uint32_t convertFloat_U32(float n) { // this is the safer option, as it can stor
 
 // STORE U8 OR U16 AS FLOAT
 
-float convertU8(uint8_t n) {
+float convertU8(uint8_t n) { // for float values between 0 and 2.55
 	float u8 = n;
 	u8 /= 100;
 	return u8;
 }
-float convertU16(uint16_t n) {
+float convertU16(uint16_t n) { // for float values between 0 and 655.35
 	float u16 = n;
 	u16 /= 100;
 	return u16;
 }
-float convertU32(uint32_t n) {
+float convertU32(uint32_t n) { // for much larger float values
 	float u32 = n;
 	u32 /= 10000;
 	return u32;
@@ -109,7 +109,7 @@ std::string readString(std::istream& file) {
 	return str;
 }
 void writeString(std::ostream& file, std::string str) {
-	uint16_t len = str.length();
+	uint16_t len = str.length(); // note this means our max string length is 65,536 characters; this should be okay
 
 	writeU16(file, len);
 	file.write(str.c_str(), len);

@@ -115,11 +115,13 @@ int Character::getAttackBonus(std::string attack) {
 
 Spell Character::getSpellFromClass(std::string spell_name) {
 	Spell *p = Character::char_class->class_spells.data();
-	for (int i = 0; i < Character::char_class->class_spells.size(); i++) {
-		if (Character::char_class->class_spells[i].getValue("name") == spell_name) {
-			return Character::char_class->class_spells[i];
+	// using an iterator is better than using "int i = 0; i < Character::char_class->class_spells.size(); i++"
+	for (std::vector<Spell>::iterator it = Character::char_class->class_spells.begin(); it != Character::char_class->class_spells.end(); it++) {
+		if (it->getValue("name") == spell_name) {
+			return *it;
 		}
 		else {
+			// not all control paths return a value...fix?
 			continue;
 		}
 	}
@@ -128,6 +130,9 @@ Spell Character::getSpellFromClass(std::string spell_name) {
 Spell Character::getKnownSpells(int n) {
 	if (Character::char_spells.size() > 0 && n <= Character::char_spells.size() && n >= 0) {
 		return Character::char_spells[n]; // should only return if we have elements in the vector, aren't past the end, and n is not negative
+	}
+	else {
+		// not all control paths return a value...fix?
 	}
 }
 
@@ -279,6 +284,9 @@ void Character::addSkillRank(std::string skill_name, int num_ranks) {
 Skill Character::getSkill(int i) {
 	if (i >= 0 && i <= Character::char_skills_vector.size()) {
 		return Character::char_skills_vector[i];
+	}
+	else {
+		// not all control paths return a value...fix?
 	}
 }
 
