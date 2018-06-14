@@ -114,3 +114,9 @@ void writeString(std::ostream& file, std::string str) {
 	writeU16(file, len);
 	file.write(str.c_str(), len);
 }
+
+// DATA PATH STANDARD
+
+std::string getDataPath(std::string filename) {
+	return ("data/" + filename);
+}

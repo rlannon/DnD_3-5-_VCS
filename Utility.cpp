@@ -444,13 +444,36 @@ void modClass(Skill skill_structure[num_skills]) {
 
 						temp_spell.associated_class = temp.name;
 
-						std::cout << "Spell Level: ";
-						std::cin >> spell_num_data;
-						temp_spell.spell_level = spell_num_data;
+						while (!std::cin.fail()) {
+							std::cout << "Spell Level: ";
+							std::cin >> spell_num_data;
+							if (!std::cin.fail()) {
+								temp_spell.spell_level = spell_num_data;
+								break;
+							}
+							else {
+								std::cin.clear();
+								std::cin.ignore();
+								std::cout << "expected an integer; you entered something else; try again: " << std::endl;
+								continue;
+							}
+						}
 
-						std::cout << "Spell Resistance? (1/0) ";
-						std::cin >> spell_num_data;
-						temp_spell.spell_resistance = (bool)spell_num_data;
+						while (!std::cin.fail()) {
+							std::cout << "Spell Resistance? (1/0) ";
+							std::cin >> spell_num_data;
+							if (!std::cin.fail()) {
+								temp_spell.spell_resistance = (bool)spell_num_data;
+								break;
+							}
+							else {
+								std::cin.clear();
+								std::cin.ignore();
+								std::cout << "expected an integer; you entered something else; try again: " << std::endl;
+								continue;
+							}
+
+						}
 
 						std::cout << "Components: ";
 						std::cin.ignore();

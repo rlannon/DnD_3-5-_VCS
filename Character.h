@@ -20,6 +20,7 @@ class Character
 {
 	friend void saveToVCS(std::ostream& file, Character character);
 	friend void loadVCS(std::istream& file, Character* character);
+	friend void loadCharacter(std::istream& vcs_file, Character* character, CharacterClass* char_class, Race* char_race);
 protected:
 	CharacterClass* char_class;
 	Race* char_race;
@@ -61,6 +62,8 @@ public:
 	std::string getRace();
 	std::string getClass();
 
+	CharacterClass getCharClass();
+
 	void setCharacterRace(Race* char_race);
 	void setCharacterClass(CharacterClass* char_class);
 	
@@ -79,6 +82,7 @@ public:
 	Spell getSpellFromClass(std::string spell_name);
 	Spell getKnownSpells(int n);
 	void addSpell(Spell spell);
+	void addSpell(std::string name);
 
 	// saving throws
 	int getSavingThrow(std::string s_throw);

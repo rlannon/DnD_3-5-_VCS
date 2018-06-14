@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
 #include "Character.h"
+#include "CharacterClass.h"
+#include "Race.h"
 
 /***********************************************************
 ****************		VCS.H				****************
@@ -32,9 +34,7 @@ The VCS format is at the center of this program; it is what we use to save insta
 	uint16_t gp
 	uint16_t pp
 
-New in version 2:
-The character inventory vectors are saved in the character file.
-	U16 num_item (item.size + wpn.size + armor.size)
+After the code to write the VCS file, the VCS format saves the character inventory vectors as separate .inventory.rvo files; this allows us to more cleanly manage player data and inventories, but still save and load these inventories using VCS functions.
 
 */
 
@@ -42,3 +42,6 @@ const short vcs_version = 2;
 
 void saveToVCS(std::ostream& file, Character character);
 void loadVCS(std::istream& file, Character* character);
+
+// When loading data to a character, use this function -- loadVCS just loads VCS data, loadCharacter loads all data (class data, etc.) into a character object
+void loadCharacter(std::istream& vcs_file, Character* character, CharacterClass* char_class, Race* char_race);

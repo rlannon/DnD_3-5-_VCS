@@ -41,15 +41,34 @@ void CharacterClass::setName(std::string str) {
 	CharacterClass::name = str;
 }
 
+Spell CharacterClass::getSpell(std::string spell_name) {
+	for (std::vector<Spell>::iterator it = CharacterClass::class_spells.begin(); it != CharacterClass::class_spells.end(); it++) {
+		if (spell_name == it->getValue("name")) {
+			return *it;
+			break;
+		}
+	}
+}
 
+std::vector<Spell> CharacterClass::getSpell(int level) {
+	std::vector<Spell> temp;
+	for (std::vector<Spell>::iterator it = CharacterClass::class_spells.begin(); it != CharacterClass::class_spells.end(); it++) {
+		if (it->spell_level == level) {
+			temp.push_back(*it);
+			continue;
+		}
+		if (it->spell_level > level) {
+			break;
+		}
+	}
+	return temp;
+}
 
 /*****************************************
 
 		Constructor and Destructor
 
 *****************************************/
-
-
 
 CharacterClass::CharacterClass(std::string name, short base_attack_bonus, unsigned short fortitude, unsigned short reflex, unsigned short will, unsigned short hit_die, unsigned short skill_coefficient)
 {

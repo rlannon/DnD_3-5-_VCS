@@ -8,8 +8,6 @@ The id code for "Item" is 1xxxx (we have 16 bits so we can go up to 65535)
 
 */
 
-//int getItemID(std::vector<Item> item_vector, std::string name);
-
 class Item
 {
 protected:

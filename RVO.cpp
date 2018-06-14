@@ -33,7 +33,7 @@ bool readHeader(std::istream& file) {
 
 	// first, check our header data to make sure it is the correct file format. If so, continue on
 	if (header[0, 1, 2, 3] == *"R", "V", "O", "f") {
-		vers = readU8(file);
+		vers = readU8(file); // currently this prevents us from using file version in future formats...
 		return true;
 	}
 	else {
@@ -294,7 +294,7 @@ void loadToVector_RVO(std::istream & file, std::vector<Item>* item, std::vector<
 }
 
 // load individual object from RVO
-void loadItem_RVO(std::istream& file, Item* item, int item_id) {
+void loadItem_RVO(std::istream& file, Item* item, int item_id) { // change from item_id to name? might be easier to use..create duplicate?
 	short type;
 	int id = 0;
 	if (readHeader(file)) {

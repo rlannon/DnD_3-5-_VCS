@@ -1,16 +1,5 @@
 #include "Item.h"
 
-//int getItemID(std::vector<Item> item_vector, std::string name) {
-//	for (std::vector<Item>::iterator it = item_vector.begin(); it != item_vector.end(); it++) {
-//		if (name == it->getName()) {
-//			return it->getId();
-//		}
-//		else {
-//			continue;
-//		}
-//	}
-//}
-
 std::string Item::getName() {
 	return Item::name;
 }

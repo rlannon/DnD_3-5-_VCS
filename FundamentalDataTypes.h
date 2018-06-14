@@ -8,6 +8,8 @@ This header only needs to be included in the .cpp files for a file format specif
 
 Note that these functions are used for reading and writing *unsigned* 8/16 bit values; for signed values, simply cast the signed integer to an unsigned value before writing and cast back to a signed value after reading.
 
+Included here also also functions for returning the proper data path; this is by default set to data/ but having one place to change it makes it easier for future changes in library hierarchy.
+
 */
 
 // We need readU8 and writeU8 because of the terminator character -- we can't simply read or write 1 byte with file.write() and file.read().
@@ -34,3 +36,6 @@ float convertU32(uint32_t n);
 // Note the max string length is 2^16, far longer than we will be needing, but we want to be safe
 std::string readString(std::istream& file);
 void writeString(std::ostream& file, std::string str);
+
+// Data path functions
+std::string getDataPath(std::string filename);

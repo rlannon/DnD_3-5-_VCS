@@ -12,6 +12,11 @@ std::string Character::getClass() {
 	return Character::char_class_name;
 }
 
+CharacterClass Character::getCharClass()
+{
+	return *Character::char_class;
+}
+
 // SET CLASS AND RACE
 
 void Character::setCharacterRace(Race* char_race) {
@@ -126,18 +131,61 @@ Spell Character::getKnownSpells(int n) {
 	}
 }
 
+/*
+
+A note on adding Spell objects to the Character::char_spells vector:
+
+There are three ways one could add a spell to the Character spell vector -- and all are appropriate.
+
+The first method is to create a new Spell object, then use addSpell and pass that object directly to it. Example:
+		character.addSpell(new_spell);
+
+Second, which is just a slightly altered version of the first method, is to pass an object from the function Character::getCharClass().getSpell() into addSpell. Example:
+		character.addSpell(character.getCharClass().getSpell("test spell"));
+
+Third, which is most useful for adding spells of a particular level -- is to create a temp Spell vector that is equal to Character::getCharClass().getSpellLevel(_spell level to add_), create an iterator 'it' that iterates through that temp vector, and use addSpell(*it) for each iteration of the iterator 'it'. Example:
+		std::vector<Spell> temp = character.getCharClass().getSpell(10);
+		for (std::vector<Spell>::iterator it = temp.begin(); it != temp.end(); it++) {
+			character.addSpell(*it);
+		}
+
+*/
+
 void Character::addSpell(Spell spell) {
 	bool char_knows_spell = false;
-	for (int i = 0; i < Character::char_spells.size(); i++) {
-		if (spell.getValue("name") == Character::char_spells[i].getValue("name")) {
-			bool char_knows_spell = true; // set this to true if the spell is in the vector already
+	//for (int i = 0; i < Character::char_spells.size(); i++) {
+	for (std::vector<Spell>::iterator it = Character::char_spells.begin(); it != Character::char_spells.end(); it++){
+		if (spell.getValue("name") == it->getValue("name")) {
+			char_knows_spell = true; // set this to true if the spell is in the vector already
+			break; // don't continue cycling through the vector if we hit the spell
 		}
 	}
 	if (!char_knows_spell) {
 		Character::char_spells.push_back(spell); // if our bool is false, then add the spell to the vector
 	}
-	else { // if character already knows the spell -- we don't want duplicates in the vector
+	else if (char_knows_spell) { // if character already knows the spell -- we don't want duplicates in the vector
 		return;
+	}
+}
+
+void Character::addSpell(std::string name) {
+	bool char_knows_spell = false;
+
+	for (std::vector<Spell>::iterator it = Character::char_spells.begin(); it != Character::char_spells.end(); it++) {
+		if (name == it->getValue("name")) {
+			char_knows_spell = true;
+		}
+	}
+	if (!char_knows_spell) {
+		for (std::vector<Spell>::iterator it = Character::char_class->class_spells.begin(); it != Character::char_class->class_spells.end(); it++) {
+			if (name == it->getValue("name")) {
+				Character::char_spells.push_back(*it);
+				break;
+			}
+		}
+	}
+	else if (char_knows_spell) {
+		return; // character already knows the spell
 	}
 }
 

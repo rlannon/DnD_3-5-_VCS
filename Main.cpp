@@ -22,9 +22,6 @@
 // Other
 #include "Utility.h"
 
-// debug function
-void printCharSheet(Character character, CharacterClass char_class, Skill skill[num_skills]);
-
 int main() {
 	/*
 
@@ -74,9 +71,9 @@ int main() {
 
 	int c;
 	uint8_t n = 1;
-
+	/*
 	std::ifstream racefile;
-	racefile.open("data/Dwarf.rvr", std::ios::in | std::ios::binary);
+	racefile.open(getDataPath("Dwarf.rvr"), std::ios::in | std::ios::binary);
 	if (racefile.is_open()) {
 		loadRVR(racefile, &char_race);
 		racefile.close();
@@ -86,10 +83,9 @@ int main() {
 	}
 
 	std::ifstream classfile;
-	classfile.open("data/test.rvc", std::ios::in | std::ios::binary);
+	classfile.open(getDataPath("Barbarian.rvc"), std::ios::in | std::ios::binary);
 	if (classfile.is_open()) {
 		loadRVC(classfile, &char_class, 0);
-		std::cout << "Test file is version: " << getFileVersion(classfile) << std::endl;
 		classfile.close();
 	}
 	else {
@@ -97,7 +93,7 @@ int main() {
 	}
 
 	std::ifstream skillfile;
-	skillfile.open("data/skills.skills", std::ios::in | std::ios::binary);
+	skillfile.open(getDataPath("skills.skills"), std::ios::in | std::ios::binary);
 	if (skillfile.is_open()) {
 		loadSkillStructure(skillfile, skill_ptr);
 		skillfile.close();
@@ -105,8 +101,11 @@ int main() {
 	else {
 		err += "error reading file \"data/skills.skills\"!\n";
 	}
-
-	/*int cost[4] = { 1, 2, 3, 4 };
+	*/
+	//character.createNewCharacter(&char_class, &char_race, skill_ptr, "Stout", 10, 11, 12, 13, 14, 15);
+	
+	/*
+	int cost[4] = { 1, 2, 3, 4 };
 	Weapon wpn("test", 1, 2, cost, "none", 1, 2, 3, 4, "some type");
 	Armor armor("sample", 3, 4, cost, "something", 5, 6, 7, .8, 30, 20);
 	Item item("an item", 5, 6, cost, "notes!!");
@@ -116,7 +115,7 @@ int main() {
 	character.addItem(wpn);
 	character.addItem(armor);
 	character.addItem(item);
-
+	
 	std::ofstream charfile;
 	charfile.open("sample.vcs", std::ios::out | std::ios::binary);
 	if (charfile.is_open()) {
@@ -130,7 +129,7 @@ int main() {
 	Character test_char;
 
 	std::ifstream samplefile;
-	samplefile.open("sample.vcs", std::ios::out | std::ios::binary);
+	samplefile.open("sample.vcs", std::ios::in | std::ios::binary);
 	if (samplefile.is_open()) {
 		loadVCS(samplefile, &test_char);
 		samplefile.close();
@@ -139,35 +138,45 @@ int main() {
 		std::cout << "vcs load err" << std::endl;
 	}*/
 
+	std::ofstream vcsfile;
+	std::ifstream in_vcs;
+
 	while (n > 0) {
+		std::string in_data;
 		std::cout << "Select an option:\n" << std::endl
 			<< "[1] Use Utility" << std::endl
-			<< "[2] Print CharSheet" << std::endl
-			<< "[3] Load Test Class" << std::endl
-			<< "\n[4] Quit" << std::endl;
+			<< "[2] Create Character" << std::endl
+			<< "[3] Save Character as VCS" << std::endl
+			<< "[4] Load VCS to Character" << std::endl
+			<< "\n[5] Quit" << std::endl;
 		std::cin >> c;
 		switch (c) {
 		case 1:
 			utility();
 			break;
 		case 2:
-			character.createNewCharacter(&char_class, &char_race, skill_ptr, "Stout", 10, 11, 12, 13, 14, 15);
-			printCharSheet(character, char_class, skill_structure);
 			break;
 		case 3:
-			classfile.open("data/test.rvc", std::ios::in | std::ios::binary);
-			if (classfile.is_open()) {
-				loadRVC(classfile, &char_class, 15);
-
-				std::cout << "file version: " << getFileVersion(classfile) << std::endl;
-
-				classfile.close();
+			vcsfile.open(getDataPath(character.getName() + ".vcs"), std::ios::out | std::ios::binary);
+			if (vcsfile.is_open()) {
+				saveToVCS(vcsfile, character);
+				vcsfile.close();
 			}
 			else {
-				err += "error reading file!\n";
+				std::cout << "could not open vcs file" << std::endl;
 			}
 			break;
 		case 4:
+			in_vcs.open("data/Stout.vcs", std::ios::in | std::ios::binary);
+			if (in_vcs.is_open()) {
+				loadCharacter(in_vcs, &character, &char_class, &char_race);
+				in_vcs.close();
+			}
+			else {
+				std::cout << "could not open vcs file" << std::endl;
+			}
+			break;
+		case 5:
 			n--;
 			break;
 		default:
@@ -177,28 +186,4 @@ int main() {
 		std::cout << std::endl;
 	}
 	return 0;
-}
-
-void printCharSheet(Character character, CharacterClass char_class, Skill skill[num_skills]) {
-	std::cout << "character sheet: " << std::endl << std::endl
-		<< "Name: \t" << character.getName() << std::endl
-		<< "Race: \t" << character.getRace() << std::endl
-		<< "Class: \t" << character.getClass() << std::endl
-		<< "Level: \t" << (int)character.getLevel() << std::endl
-		<< "Strength: \t" << character.getAbilityScore("str") << std::endl
-		<< "Max Hit Points: \t" << character.getMaxHitPoints() << std::endl
-		<< "Armor Class: \t" << std::endl
-		<< "Base Attack Bonus (M/R): \t" << character.getAttackBonus("mel") << "/" << character.getAttackBonus("ran") << std::endl
-		<< "Fortitude: \t" << character.getSavingThrow("for") << std::endl
-		<< "Reflex: \t" << character.getSavingThrow("ref") << std::endl
-		<< "Will: \t" << character.getSavingThrow("wil") << std::endl << std::endl;
-	// list class skills
-	short count = 0;
-	for (int i = 0; i < character.getNumSkills(); i++) {
-		std::cout << character.getSkill(i).getSkillName() << ": " << character.getSkillModifier(character.getSkill(i)) << std::endl;
-		count++;
-	}
-	std::cout << "num skills: " << count << std::endl;
-
-	return;
 }
