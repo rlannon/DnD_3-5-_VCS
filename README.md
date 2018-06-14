@@ -42,11 +42,11 @@ The Skills format (.skills) is simply used to store our array of Skills objects.
 
 ## Built With
 
-*[Microsoft Visual Studio 2017]() - Editor and Compiler
+* [Microsoft Visual Studio 2017]() - Editor and Compiler
 
 ## Authors
 
-*_Riley Lannon_ - Program author and debugger
+* _Riley Lannon_ - Program author and debugger
 
 ## Acknowledgments
 
