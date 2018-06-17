@@ -7,8 +7,8 @@
 /* RVO - RKS Virtual Object Format
 Overview and description of the format
 
-This file establishes the RVO format, used to store items used in RKS. It is possible that this file format will eventually include the RVC and RVR formats, but as of version 1, it is only used to store the Item class and its child classes, Weapon and Armor.
-RVO files store multiple objects in them; they are tracked using "num_objects" at the head of the file and "object_type" at the head of each object. This allows us to store weapon data in one file, armor data in another, and misc item data in another. This also allows player inventory to be tracked in That way, we do not need a file for every individual object. Special items may get their own objects, but that is up to the implementation author.
+This file establishes the RVO format, used to store items in RKS. It is a "Virtual Object File". It is similar to RVC and RVR -- they are all Object files -- but this specifically stores real-world items and objects that are usable by the player.
+RVO files can store multiple objects in them; they are tracked using "num_objects" at the head of the file and "object_type" at the head of each object. This allows us to store weapon data in one file, armor data in another, and misc item data in another. This also allows player inventory to be tracked in That way, we do not need a file for every individual object. Special items may get their own objects, but that is up to the implementation author.
 Since this file format uses floats as data types, we must include a "convertFloat" function to move the data to and from float to uint8_t/uint16_t. This is done by multiplying and dividing by ten as many times as the precision we need (2 decimal places). These functions are found in the FundamentalDataTypes file.
 
 The file is laid out as follows; the first section contains the Item data, and is used for all three types:
@@ -62,6 +62,9 @@ const short obj_is_weapon = 2;
 const short obj_is_armor = 3;
 
 const short multiple_obj_types = 4;
+
+const short obj_is_charclass = 5;
+const short obj_is_race = 6;
 
 // functions to make our lives easier / the code easier to read
 void writeHeader(std::ostream& file);

@@ -45,10 +45,16 @@ void saveToRVC(std::ostream& file, ClassData class_obj) {
 	writeU8(file, class_obj.getVectorSize("skills"));
 
 	// then, write all data from skills vector using a for loop
-	for (int i = 0; i < class_obj.getVectorSize("skills"); i++) {
+	/*for (int i = 0; i < class_obj.getVectorSize("skills"); i++) {
 		writeString(file, class_obj.getSkillFromVector(i).getSkillName());
 		writeString(file, class_obj.getSkillFromVector(i).getSkillAbility());
 		writeU8(file, class_obj.getSkillFromVector(i).isUntrained());
+	}*/
+	// use a vector iterator instead
+	for (std::vector<Skill>::iterator it = class_obj.class_skill_vector.begin(); it != class_obj.class_skill_vector.end(); it++) {
+		writeString(file, it->getSkillName());
+		writeString(file, it->getSkillAbility());
+		writeU8(file, (uint8_t)it->isUntrained()); // cast bool to uint8_t
 	}
 
 	/***************************************************************
@@ -75,6 +81,7 @@ void saveToRVC(std::ostream& file, ClassData class_obj) {
 		writeU8(file, class_obj.getVectorSize("spells"));
 
 		// then, write all data from vector into file using a for loop
+		/*
 		for (int i = 0; i < class_obj.getVectorSize("spells"); i++) {
 			// write spell level and whether it is subject to spell resistance
 			writeU8(file, class_obj.getSpellFromVector(i).getLevel());
@@ -90,6 +97,23 @@ void saveToRVC(std::ostream& file, ClassData class_obj) {
 			writeString(file, class_obj.getSpellFromVector(i).getValue("duration"));
 			writeString(file, class_obj.getSpellFromVector(i).getValue("saving throw"));
 			writeString(file, class_obj.getSpellFromVector(i).getValue("description"));
+		}*/
+		// use vector iterator instead
+		for (std::vector<Spell>::iterator it = class_obj.class_spells.begin(); it != class_obj.class_spells.end(); it++) {
+			// write spell level and whether it is subject to spell resistance
+			writeU8(file, it->getLevel());
+			writeU8(file, it->spellResistance());
+
+			// write all other values
+			writeString(file, it->getValue("name"));
+			writeString(file, it->getValue("associated class"));
+			writeString(file, it->getValue("components"));
+			writeString(file, it->getValue("casting time"));
+			writeString(file, it->getValue("range"));
+			writeString(file, it->getValue("target"));
+			writeString(file, it->getValue("duration"));
+			writeString(file, it->getValue("saving throw"));
+			writeString(file, it->getValue("description"));
 		}
 	} // end of "if isCaster()"
 
@@ -218,7 +242,7 @@ void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level) {
 	}
 }
 
-void loadClassData_RVC(std::istream& file, ClassData* class_obj) {
+void loadClassData(std::istream& file, ClassData* class_obj) {
 	char header[4];
 	char * buffer = &header[0];
 	short vers = 0;

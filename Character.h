@@ -25,7 +25,7 @@ protected:
 	CharacterClass* char_class;
 	Race* char_race;
 
-	std::vector<Skill> char_skills_vector;
+	std::vector<Skill> char_skills;
 
 	std::string name;
 	std::string race_name;
@@ -69,7 +69,7 @@ public:
 	
 	// abilities
 	int getAbilityScore(std::string ability);
-	int getModifier(int ability_score);
+	int calcModifier(int ability_score);
 	void increaseAbilityScore(std::string name);
 
 	// combat
@@ -79,7 +79,7 @@ public:
 	int getAttackBonus(std::string attack);
 
 	// magic
-	Spell getSpellFromClass(std::string spell_name);
+	Spell getClassSpell(std::string spell_name);
 	Spell getKnownSpells(int n);
 	void addSpell(Spell spell);
 	void addSpell(std::string name);
@@ -95,7 +95,7 @@ public:
 	// skill functions
 	int getSkillModifier(Skill skill);
 	std::string getSkillName(Skill skill);
-	void addSkillRank(std::string skill_name, int num_ranks);
+	void addSkillRank(std::string skill_name, unsigned short num_ranks);
 	Skill getSkill(int i);
 	int getNumSkills();
 

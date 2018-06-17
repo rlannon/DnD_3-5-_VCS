@@ -59,40 +59,13 @@ void writeU32(std::ostream& file, uint32_t val) {
 	file.write((char*)bytes, 4);
 }
 
-// STORE FLOAT AS U8 OR U16
+// CONVERT TO/FROM FLOAT & UINT32_T
 
-uint8_t convertFloat_U8(float n) { // U8 should only be used for decimal places of 2 digits with numbers less than 2.55
-	float u8 = n; // multiply by 10^1 to store 2 decimal place as an integer
-	u8 *= 100;
-	return (uint8_t)u8;
+uint32_t convertFloat(float n) {
+	return *reinterpret_cast<uint32_t*>(&n);
 }
-uint16_t convertFloat_U16(float n) {
-	float u16 = n;
-	u16 *= 100;
-	return (uint16_t)u16;
-}
-uint32_t convertFloat_U32(float n) { // this is the safer option, as it can store 3 digits
-	float u32 = n; // multiply by 10^4 to store 4 decimal places as an integer
-	u32 *= 10000;
-	return (uint32_t)u32;
-}
-
-// STORE U8 OR U16 AS FLOAT
-
-float convertU8(uint8_t n) { // for float values between 0 and 2.55
-	float u8 = n;
-	u8 /= 100;
-	return u8;
-}
-float convertU16(uint16_t n) { // for float values between 0 and 655.35
-	float u16 = n;
-	u16 /= 100;
-	return u16;
-}
-float convertU32(uint32_t n) { // for much larger float values
-	float u32 = n;
-	u32 /= 10000;
-	return u32;
+float convertUnsigned(uint32_t n) {
+	return reinterpret_cast<float&> (n);
 }
 
 // READ/WRITE STRING AND STRING LENGTH

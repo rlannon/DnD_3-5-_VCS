@@ -33,7 +33,7 @@ class Spell
 	friend class CharacterClass;
 	friend class ClassData;
 	friend void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level);
-	friend void loadClassData_RVC(std::istream& file, ClassData* class_obj);
+	friend void loadClassData(std::istream& file, ClassData* class_obj);
 	friend void modClass(Skill skill_structure[num_skills]);
 public:
 	short getLevel();

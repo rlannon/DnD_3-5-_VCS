@@ -18,7 +18,7 @@ This library establishes RVC file format, which is to be used for storing all th
 
 	uint8_t version;
 
-	(bool)uint8_t magic_caster
+	(bool)uint8_t is_caster;
 
 	uint8_t base_attack_bonus[20];
 
@@ -54,6 +54,6 @@ const short rvc_version = 2;
 void saveToRVC(std::ostream& file, ClassData class_obj);
 void loadRVC(std::istream& file, CharacterClass* class_obj, uint8_t level);
 
-void loadClassData_RVC(std::istream& file, ClassData* class_obj);
+void loadClassData(std::istream& file, ClassData* class_obj);
 
 short getFileVersion(std::istream& file);

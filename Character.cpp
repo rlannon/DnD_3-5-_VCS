@@ -52,7 +52,7 @@ int Character::getAbilityScore(std::string ability) {
 	}
 }
 
-int Character::getModifier(int ability_score) {
+int Character::calcModifier(int ability_score) {
 	return ((ability_score - 10) / 2);
 }
 
@@ -88,7 +88,7 @@ void Character::increaseAbilityScore(std::string name) {
 // COMBAT
 
 int Character::getMaxHitPoints() {
-	return (((int)Character::getLevel() + 1) * (Character::getModifier(Character::getAbilityScore("con")) + Character::char_class->hit_die));
+	return (((int)Character::getLevel() + 1) * (Character::calcModifier(Character::getAbilityScore("con")) + Character::char_class->hit_die));
 }
 
 int Character::calcArmorClass() {
@@ -101,10 +101,10 @@ int Character::calcFlatFooted() {
 
 int Character::getAttackBonus(std::string attack) {
 	if (attack == "melee" || attack == "mel") {
-		return Character::getModifier(Character::getAbilityScore("str")) + Character::char_class->base_attack_bonus;
+		return Character::calcModifier(Character::getAbilityScore("str")) + Character::char_class->base_attack_bonus;
 	}
 	else if (attack == "ranged" || attack == "ran") {
-		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->base_attack_bonus;
+		return Character::calcModifier(Character::getAbilityScore("dex")) + Character::char_class->base_attack_bonus;
 	}
 	else {
 		return 419;
@@ -113,7 +113,7 @@ int Character::getAttackBonus(std::string attack) {
 
 // MAGIC
 
-Spell Character::getSpellFromClass(std::string spell_name) {
+Spell Character::getClassSpell(std::string spell_name) {
 	Spell *p = Character::char_class->class_spells.data();
 	// using an iterator is better than using "int i = 0; i < Character::char_class->class_spells.size(); i++"
 	for (std::vector<Spell>::iterator it = Character::char_class->class_spells.begin(); it != Character::char_class->class_spells.end(); it++) {
@@ -198,13 +198,13 @@ void Character::addSpell(std::string name) {
 
 int Character::getSavingThrow(std::string s_throw) {
 	if (s_throw == "fortitude" || s_throw == "for") {
-		return Character::getModifier(Character::getAbilityScore("con") + Character::char_class->fortitude);
+		return Character::calcModifier(Character::getAbilityScore("con") + Character::char_class->fortitude);
 	}
 	else if (s_throw == "reflex" || s_throw == "ref") {
-		return Character::getModifier(Character::getAbilityScore("dex")) + Character::char_class->reflex;
+		return Character::calcModifier(Character::getAbilityScore("dex")) + Character::char_class->reflex;
 	}
 	else if (s_throw == "will" || s_throw == "wil") {
-		return Character::getModifier(Character::getAbilityScore("wis")) + Character::char_class->will;
+		return Character::calcModifier(Character::getAbilityScore("wis")) + Character::char_class->will;
 	}
 	else {
 		return 419;
@@ -240,7 +240,7 @@ uint8_t Character::getLevel() {
 			break; // once this happens, break from the 'for' loop -- but always check the above two first
 		}
 	}
-	return lvl;
+	return (uint8_t)lvl;
 }
 
 void Character::modXP(std::string op, int val) {
@@ -257,7 +257,7 @@ void Character::modXP(std::string op, int val) {
 
 void Character::levelUp() {
 	// add skill ranks
-	ranks_to_use += (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence));
+	ranks_to_use += (Character::char_class->skill_coefficient + Character::calcModifier(Character::intelligence));
 	// check to see if we need to add an ability score increase
 	if (Character::getLevel() % 4 == 0) {
 		Character::ability_score_increase_flag = true;
@@ -270,20 +270,20 @@ void Character::levelUp() {
 // SKILL FUNCTIONS
 
 int Character::getSkillModifier(Skill skill) {
-	return (skill.ranks + (Character::getModifier(Character::getAbilityScore(skill.ability))));
+	return (skill.ranks + (Character::calcModifier(Character::getAbilityScore(skill.ability))));
 }
 
 std::string Character::getSkillName(Skill skill) {
 	return skill.name;
 }
 
-void Character::addSkillRank(std::string skill_name, int num_ranks) {
+void Character::addSkillRank(std::string skill_name, unsigned short num_ranks) {
 
 }
 
 Skill Character::getSkill(int i) {
-	if (i >= 0 && i <= Character::char_skills_vector.size()) {
-		return Character::char_skills_vector[i];
+	if (i >= 0 && i <= Character::char_skills.size()) {
+		return Character::char_skills[i];
 	}
 	else {
 		// not all control paths return a value...fix?
@@ -291,7 +291,7 @@ Skill Character::getSkill(int i) {
 }
 
 int Character::getNumSkills() {
-	return Character::char_skills_vector.size();
+	return Character::char_skills.size();
 }
 
 void Character::addItem(Item item)
@@ -330,7 +330,7 @@ void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, 
 	Character::money[2] = 0;
 	Character::money[3] = 0;
 
-	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence)) * 4; // level 1 ranks
+	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::calcModifier(Character::intelligence)) * 4; // level 1 ranks
 	Character::ability_score_increase_flag = false;
 	Character::add_feat_flag = false;
 
@@ -341,7 +341,7 @@ void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, 
 
 	Character::xp = 0;	// player also shouldn't start with -8k xp
 
-	Character::char_skills_vector.clear();
+	Character::char_skills.clear();
 
 	// we will create an iterator to count through our vectors, and use our for loop to count through the master skill list
 	std::vector<Skill>::iterator it = Character::char_class->class_skill_vector.begin();
@@ -350,18 +350,18 @@ void Character::createNewCharacter(CharacterClass* char_class, Race* char_race, 
 		if (it != Character::char_class->class_skill_vector.end()) {
 			// if the next skill in our iterator is in our class vector, add the skill from the master list to the character vector
 			if ((char_skill_ptr + i)->name == it->name) {
-				Character::char_skills_vector.push_back(*(char_skill_ptr + i));
+				Character::char_skills.push_back(*(char_skill_ptr + i));
 				it++;
 			}
 			// if it is not, but it is untrained, add it to the character vector
 			else if (((char_skill_ptr + i)->name != it->name) && ((char_skill_ptr + i)->isUntrained())) {
-				Character::char_skills_vector.push_back(*(char_skill_ptr + i));
+				Character::char_skills.push_back(*(char_skill_ptr + i));
 			}
 		}
 		// if we have reached the end of the vector, but not the end of the master skill list, check to see if the rest are untrained
 		else {
 			if ((char_skill_ptr + i)->isUntrained()) {
-				Character::char_skills_vector.push_back(*(char_skill_ptr + i));
+				Character::char_skills.push_back(*(char_skill_ptr + i));
 			}
 		}
 	}
@@ -389,7 +389,7 @@ Character::Character(CharacterClass* char_class, Race* char_race, Skill* char_sk
 	Character::money[2] = 0;
 	Character::money[3] = 0;
 
-	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::getModifier(Character::intelligence)) * 4; // level 1 ranks
+	Character::ranks_to_use = (Character::char_class->skill_coefficient + Character::calcModifier(Character::intelligence)) * 4; // level 1 ranks
 	Character::ability_score_increase_flag = false;
 	Character::add_feat_flag = false;
 

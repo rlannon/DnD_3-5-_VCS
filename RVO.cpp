@@ -14,7 +14,7 @@ void writeItemData(std::ostream& file, Item item) {
 	writeU16(file, item.id);
 
 	writeString(file, item.name);
-	writeU32(file, convertFloat_U32(item.weight));
+	writeU32(file, convertFloat(item.weight));
 
 	writeU16(file, item.cost[0]);
 	writeU16(file, item.cost[1]);
@@ -45,7 +45,7 @@ void readItemData(std::istream& file, Item* item) {
 	item->id = readU16(file);
 
 	item->name = readString(file);
-	item->weight = convertU32(readU32(file));
+	item->weight = convertUnsigned(readU32(file));
 
 	item->cost[0] = readU16(file);
 	item->cost[1] = readU16(file);
@@ -97,7 +97,7 @@ void saveToRVO(std::ostream& file, std::vector<Armor> armor) {
 		writeU8(file, it->max_dex);
 		writeU8(file, it->armor_check_penalty);
 
-		writeU8(file, convertFloat_U8(it->spell_fail_chance));
+		writeU8(file, convertFloat(it->spell_fail_chance));
 
 		writeU8(file, it->speed_30);
 		writeU8(file, it->speed_20);
@@ -147,7 +147,7 @@ void saveToRVO(std::ostream& file, std::vector<Item> item, std::vector<Weapon> w
 		writeU8(file, it->max_dex);
 		writeU8(file, it->armor_check_penalty);
 
-		writeU8(file, convertFloat_U8(it->spell_fail_chance));
+		writeU8(file, convertFloat(it->spell_fail_chance));
 
 		writeU8(file, it->speed_30);
 		writeU8(file, it->speed_20);
@@ -217,7 +217,7 @@ void loadToVector_RVO(std::istream& file, std::vector<Armor>* armor) {
 				temp.max_dex = readU8(file);
 				temp.armor_check_penalty = readU8(file);
 
-				temp.spell_fail_chance = convertU8(readU8(file));
+				temp.spell_fail_chance = convertUnsigned(readU8(file));
 
 				temp.speed_30 = readU8(file);
 				temp.speed_20 = readU8(file);
@@ -271,7 +271,7 @@ void loadToVector_RVO(std::istream & file, std::vector<Item>* item, std::vector<
 					a_temp.max_dex = readU8(file);
 					a_temp.armor_check_penalty = readU8(file);
 
-					a_temp.spell_fail_chance = convertU8(readU8(file));
+					a_temp.spell_fail_chance = convertUnsigned(readU8(file));
 
 					a_temp.speed_30 = readU8(file);
 					a_temp.speed_20 = readU8(file);
@@ -311,7 +311,7 @@ void loadItem_RVO(std::istream& file, Item* item, int item_id) { // change from 
 					// if we have the right item id, get the object
 					item->id = id;
 					item->name = readString(file);
-					item->weight = convertU32(readU32(file));
+					item->weight = convertUnsigned(readU32(file));
 
 					for (int i = 0; i < 4; i++) {
 						item->cost[i] = readU16(file);
@@ -383,7 +383,7 @@ void loadItem_RVO(std::istream& file, Weapon* weapon, int item_id) {
 					// first, get Item data
 					weapon->id = id;
 					weapon->name = readString(file);
-					weapon->weight = convertU32(readU32(file));
+					weapon->weight = convertUnsigned(readU32(file));
 
 					for (int i = 0; i < 4; i++) {
 						weapon->cost[i] = readU16(file);
@@ -453,7 +453,7 @@ void loadItem_RVO(std::istream& file, Armor* armor, int item_id) {
 					// if we have the right item id, get the object
 					armor->id = id;
 					armor->name = readString(file);
-					armor->weight = convertU32(readU32(file));
+					armor->weight = convertUnsigned(readU32(file));
 
 					for (int i = 0; i < 4; i++) {
 						armor->cost[i] = readU16(file);
@@ -466,7 +466,7 @@ void loadItem_RVO(std::istream& file, Armor* armor, int item_id) {
 					armor->max_dex = readU8(file);
 					armor->armor_check_penalty = readU8(file);
 
-					armor->spell_fail_chance = convertU8(readU8(file));
+					armor->spell_fail_chance = convertUnsigned(readU8(file));
 
 					armor->speed_30 = readU8(file);
 					armor->speed_20 = readU8(file);

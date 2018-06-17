@@ -32,7 +32,8 @@ class ClassData
 
 	friend void createClass(Skill skill_structure[num_skills]);
 	friend void modClass(Skill skill_structure[num_skills]);
-	friend void loadClassData_RVC(std::istream& file, ClassData* class_obj);
+	friend void loadClassData(std::istream& file, ClassData* class_obj);
+	friend void saveToRVC(std::ostream& file, ClassData class_obj);
 public:
 	bool isCaster();
 
