@@ -4,7 +4,7 @@ A Virtual Character Sheet Management program for D&D v3.5. This code simply esta
 
 ## Getting Started
 
-This project uses the C++ Standard Libraries and is not platform-dependent; therefore, it can be compiled using any UNIX or DOS compiler. `main.cpp` is the main file, and each class and file format has its own `.h` and `.cpp` file. Note the `main.cpp` file is currently empty. The file `RKS-35.h` is the library include; including this file in a project will allow you to use all the functions in the program.
+This project uses the C++ Standard Libraries and is not platform-dependent; therefore, it can be compiled using any UNIX or DOS compiler. Note, however, that it uses the `#pragma once` directive, and so it must be compiled with a compiler that supports this preprocessor directive (as it is nonstandard). `main.cpp` is the main file, and each class and file format has its own `.h` and `.cpp` file. Note the `main.cpp` file is currently empty. The file `RKS-35.h` is the library include; including this file in a project will allow you to use all the functions in the program.
 
 For the full documentation, consult the [wiki](https://github.com/truffly/DnD_3-5-_VCS/wiki).
 
