@@ -19,6 +19,8 @@ class Weapon :
 
 	std::string type;
 
+	friend class Character;
+
 	friend void saveToRVO(std::ostream& file, std::vector<Weapon> weapon);
 	friend void loadToVector_RVO(std::istream& file, std::vector<Weapon>* weapon);
 

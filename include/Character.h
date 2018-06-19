@@ -48,9 +48,15 @@ protected:
 	std::vector<Spell> char_spells; // spells usable by the player
 
 	// level up data
-	int ranks_to_use;
+	unsigned short ranks_to_use;
 	bool ability_score_increase_flag;
 	bool add_feat_flag;
+
+	// equipped weapons and armor
+	Armor* armor_equip;
+	Armor* shield_equip;
+	Weapon* main_hand;
+	Weapon* off_hand;
 
 	// inventory
 	std::vector<Item> char_items;
@@ -95,9 +101,16 @@ public:
 	// skill functions
 	int getSkillModifier(Skill skill);
 	std::string getSkillName(Skill skill);
-	void addSkillRank(std::string skill_name, unsigned short num_ranks);
+	void addSkillRank(std::string skill_name, short num_ranks);
 	Skill getSkill(int i);
+	Skill getSkill(std::string name);
 	int getNumSkills();
+
+	// equip weapons or armor
+	void equipArmor(Armor armor); // uses item ids
+	void equipWeapon(Weapon wpn, bool off_hand); // bool off_hand should only be true it if is to be in the off-hand
+	Armor getEquippedArmor(bool shield); // 0 for armor, 1 for shield
+	Weapon getEquippedWeapon(bool off_hand); // 0 for main hand, 1 for off-hand
 
 	// inventory functions
 	void addItem(Item item);

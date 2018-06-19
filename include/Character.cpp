@@ -88,15 +88,22 @@ void Character::increaseAbilityScore(std::string name) {
 // COMBAT
 
 int Character::getMaxHitPoints() {
-	return (((int)Character::getLevel() + 1) * (Character::calcModifier(Character::getAbilityScore("con")) + Character::char_class->hit_die));
+	return (((int)Character::getLevel() + 1) * (Character::calcModifier(Character::constitution + Character::char_class->hit_die)));
 }
 
 int Character::calcArmorClass() {
-	return 0;
+	int dex_bonus = 0;
+	if (Character::armor_equip->max_dex >= Character::dexterity) {
+		dex_bonus == Character::dexterity;
+	}
+	else {
+		dex_bonus == Character::armor_equip->max_dex;
+	}
+	return (10 + Character::armor_equip->ac_bonus + Character::shield_equip->ac_bonus + dex_bonus); // what happens if the pointers don't point to anything?
 }
 
-int Character::calcFlatFooted() {
-	return 0;
+int Character::calcFlatFooted() { // flat-footed does not include dex bonus
+	return (10 + Character::armor_equip->ac_bonus + Character::shield_equip->ac_bonus);
 }
 
 int Character::getAttackBonus(std::string attack) {
@@ -277,8 +284,22 @@ std::string Character::getSkillName(Skill skill) {
 	return skill.name;
 }
 
-void Character::addSkillRank(std::string skill_name, unsigned short num_ranks) {
-
+void Character::addSkillRank(std::string skill_name, short num_ranks) {
+	if ((ranks_to_use - num_ranks) > 0) { // only allow ranks to be added if we have available ranks
+		for (std::vector<Skill>::iterator it = char_skills.begin(); it != char_skills.end(); it++) {
+			if (it->name == skill_name) {
+				it->ranks += num_ranks;
+				ranks_to_use -= num_ranks;
+				break; // done once we get the skill
+			}
+			else {
+				break; // only break if we don't get a skill
+			}
+		}
+	}
+	else { // execute if our ranks minus the number of ranks we are using if not less than or equal to zero
+		return;
+	}
 }
 
 Skill Character::getSkill(int i) {
@@ -290,9 +311,104 @@ Skill Character::getSkill(int i) {
 	}
 }
 
+Skill Character::getSkill(std::string name) {
+	for (std::vector<Skill>::iterator it = Character::char_skills.begin(); it != char_skills.end(); it++) {
+		if (name == it->name) {
+			return *it;
+		}
+		else {
+			continue;
+		}
+	}
+	// only would get executed if no skill's name matched
+}
+
 int Character::getNumSkills() {
 	return Character::char_skills.size();
 }
+
+// WEAPONS AND ARMOR
+
+void Character::equipArmor(Armor armor) {
+	bool has_item = false;
+	// first, check to see if the character actually has the item
+	for (std::vector<Armor>::iterator it = Character::char_armor.begin(); it != Character::char_armor.end(); it++) {
+		if (it->getId() == armor.getId()) {
+			has_item = true;
+			break;
+		}
+		else {
+			continue;
+		}
+	}
+
+	if (has_item) {
+		// check item id to see whether it should be in armor or shield slot
+		if (armor.getId() >= 31510) { // item ids for shields are 3151x
+			Character::shield_equip = &armor;
+		}
+		else if (armor.getId() < 31510 && armor.getId() >= 31100) { // regular armor starts at 311xx
+			Character::armor_equip = &armor;
+		}
+		else {
+			return; // invalid id
+		}
+	}
+	else {
+		return; // character does not have item
+	}
+}
+
+void Character::equipWeapon(Weapon wpn, bool off_hand) {
+	bool has_item = false;
+	// first, check to see if the weapon is in our inventory -- the proper usage should be to add an inventory item
+	for (std::vector<Weapon>::iterator it = Character::char_wpns.begin(); it != Character::char_wpns.end(); it++) {
+		if (it->getId() == wpn.getId()) {
+			has_item = true;
+			break;
+		}
+		else {
+			continue;
+		}
+	}
+	if (has_item) {
+		// check for valid item id
+		if ((wpn.getId() >= 21000) && (wpn.getId() < 22000)) { // "Weapon" ids start at 21xxx
+			if (off_hand) {
+				Character::off_hand = &wpn;
+			}
+			else {
+				Character::main_hand = &wpn;
+			}
+		}
+		else {
+			return; // invalid item id
+		}
+	}
+	else {
+		return; // character does not have item
+	}
+}
+
+Armor Character::getEquippedArmor(bool shield) {
+	if (shield) {
+		return *shield_equip;
+	}
+	else {
+		return *armor_equip;
+	}
+}
+
+Weapon Character::getEquippedWeapon(bool off_hand) {
+	if (off_hand) {
+		return *(Character::off_hand);
+	}
+	else {
+		return *main_hand;
+	}
+}
+
+// INVENTORY
 
 void Character::addItem(Item item)
 {
@@ -396,7 +512,7 @@ Character::Character(CharacterClass* char_class, Race* char_race, Skill* char_sk
 	Character::xp = 0;	// player also shouldn't start with -8k xp
 }
 
-// This initializer should be used when loading character data from a file
+// This initializer should be used when loading character data from a file; it initializes an object that is totally empty
 Character::Character() {
 	Character::name, Character::char_class_name, Character::race_name = "";
 	Character::strength, Character::dexterity, Character::constitution, Character::intelligence, Character::wisdom, Character::charisma = 0;

@@ -1,5 +1,27 @@
 #include "Armor.h"
 
+short Armor::getValue(std::string val) {
+	if (val == "ac_bonus") {
+		return ac_bonus;
+	}
+	else if (val == "max_dex") {
+		return max_dex;
+	}
+	else if (val == "speed_30") {
+		return speed_30;
+	}
+	else if (val == "speed_20") {
+		return speed_20;
+	}
+	else if (val == "armor_check_penalty" || val == "check_penalty") {
+		return armor_check_penalty;
+	}
+}
+
+float Armor::getSpellFailChance() {
+	return spell_fail_chance;
+}
+
 void Armor::newArmor(std::string name, int id, float weight, int cost[4], std::string notes, short ac_bonus, short max_dex, short check_penalty, float fail_chance, short speed_30, short speed_20 ){
 	Armor::name = name;
 	Armor::id = id;
